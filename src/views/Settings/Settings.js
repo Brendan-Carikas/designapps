@@ -36,6 +36,9 @@ import {
   TableRow,
   TableCell,
   TableBody,
+  Menu,
+  MenuItem,
+  ListItemIcon,
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import WhatsAppIcon from '@mui/icons-material/WhatsApp';
@@ -51,9 +54,16 @@ import SearchIcon from '@mui/icons-material/Search';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import LinkIcon from '@mui/icons-material/Link';
 import ClearIcon from '@mui/icons-material/Clear';
+import EditIcon from '@mui/icons-material/Edit';
+import MoreHorizOutlinedIcon from '@mui/icons-material/MoreHorizOutlined';
 import artoIcon from '../../assets/images/arto-icon-crop.png';
+import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useAIAssistants } from '../../contexts/AIAssistantsContext';
 
 const Settings = () => {
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const { assistants, deleteAssistant } = useAIAssistants();
   const [appName, setAppName] = useState('My AI Assistant');
   const [corePurposeInstructions, setCorePurposeInstructions] = useState(() => {
     return localStorage.getItem('corePurposeInstructions') || '';
@@ -78,12 +88,14 @@ const Settings = () => {
   const [drawerTitle, setDrawerTitle] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
   const [copyTooltip, setCopyTooltip] = useState('Copy');
-  const [activeTab, setActiveTab] = useState(0);
-  const [tableData] = useState([
-    { name: 'Item 1', status: 'Active', date: '2025-01-22' },
-    { name: 'Item 2', status: 'Inactive', date: '2025-01-21' },
-    { name: 'Item 3', status: 'Active', date: '2025-01-20' },
-  ]);
+  const [activeTab, setActiveTab] = useState(() => {
+    const tab = searchParams.get('tab');
+    return tab ? parseInt(tab) : 0;
+  });
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [selectedAssistant, setSelectedAssistant] = useState(null);
+  const [menuAnchorEl, setMenuAnchorEl] = useState(null);
+  const [activeAssistant, setActiveAssistant] = useState(null);
   const contentRef = useRef(null);
 
   const technicalContent = (
@@ -663,6 +675,34 @@ If these steps don't resolve the issue, let me know, and I can provide more deta
     setActiveTab(newValue);
   };
 
+  const handleMenuOpen = (event, assistant) => {
+    setMenuAnchorEl(event.currentTarget);
+    setActiveAssistant(assistant);
+  };
+
+  const handleMenuClose = () => {
+    setMenuAnchorEl(null);
+    setActiveAssistant(null);
+  };
+
+  const handleEdit = () => {
+    handleMenuClose();
+    navigate(`/app/settings/ai-assistant?id=${activeAssistant.id}`);
+  };
+
+  const handleDeleteClick = () => {
+    handleMenuClose();
+    setSelectedAssistant(activeAssistant);
+    setDeleteDialogOpen(true);
+  };
+
+  const handleDeleteConfirm = () => {
+    deleteAssistant(selectedAssistant.id);
+    // showNotification(`AI Assistant "${selectedAssistant.name}" has been deleted`);
+    setDeleteDialogOpen(false);
+    setSelectedAssistant(null);
+  };
+
   useEffect(() => {
     localStorage.setItem('corePurposeInstructions', corePurposeInstructions);
   }, [corePurposeInstructions]);
@@ -861,7 +901,7 @@ If these steps don't resolve the issue, let me know, and I can provide more deta
                         accept=".txt,.pdf,.doc,.docx"
                       />
                     </Button>
-                    <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mt: 1 }}>
+                    <Typography variant="caption" color="textSecondary">
                       Accepted file formats: TXT, PDF, DOC, DOCX
                     </Typography>
                   </Box>
@@ -974,6 +1014,15 @@ If these steps don't resolve the issue, let me know, and I can provide more deta
               <CardContent sx={{ p: 3 }}>
                 <Box display="flex" alignItems="center" mb={2}>
                   <Typography variant="h5">AI Assistants</Typography>
+                  <Box sx={{ flexGrow: 1 }} />
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    sx={{ textTransform: 'none' }}
+                    onClick={() => navigate('/app/settings/ai-assistant')}
+                  >
+                    Create
+                  </Button>
                 </Box>
                 <Divider sx={{ mb: 3 }} />
                 
@@ -981,33 +1030,121 @@ If these steps don't resolve the issue, let me know, and I can provide more deta
                   <TableHead>
                     <TableRow>
                       <TableCell>Name</TableCell>
+                      <TableCell>Description</TableCell>
+                      <TableCell>Model</TableCell>
+                      <TableCell>Max Tokens</TableCell>
+                      <TableCell>Temperature</TableCell>
                       <TableCell>Status</TableCell>
-                      <TableCell>Date</TableCell>
+                      <TableCell>Created</TableCell>
+                      <TableCell>Actions</TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {tableData.map((row, index) => (
-                      <TableRow key={index}>
-                        <TableCell>{row.name}</TableCell>
+                    {assistants.map((assistant) => (
+                      <TableRow key={assistant.id}>
+                        <TableCell>{assistant.name}</TableCell>
+                        <TableCell>
+                          <Typography
+                            sx={{
+                              maxWidth: 200,
+                              whiteSpace: 'nowrap',
+                              overflow: 'hidden',
+                              textOverflow: 'ellipsis'
+                            }}
+                          >
+                            {assistant.description || '-'}
+                          </Typography>
+                        </TableCell>
+                        <TableCell>{assistant.model}</TableCell>
+                        <TableCell>{assistant.maxTokens}</TableCell>
+                        <TableCell>{assistant.temperature}</TableCell>
                         <TableCell>
                           <Box
                             sx={{
-                              backgroundColor: row.status === 'Active' ? '#e8f5e9' : '#ffebee',
-                              color: row.status === 'Active' ? '#2e7d32' : '#c62828',
+                              backgroundColor: assistant.status === 'Active' ? '#e8f5e9' : '#ffebee',
+                              color: assistant.status === 'Active' ? '#2e7d32' : '#c62828',
                               borderRadius: 1,
                               px: 1,
                               py: 0.5,
                               display: 'inline-block',
                             }}
                           >
-                            {row.status}
+                            {assistant.status}
                           </Box>
                         </TableCell>
-                        <TableCell>{row.date}</TableCell>
+                        <TableCell>{assistant.date}</TableCell>
+                        <TableCell>
+                          <Box sx={{ display: 'flex', gap: 1 }}>
+                            <IconButton
+                              size="small"
+                              onClick={(e) => handleMenuOpen(e, assistant)}
+                              sx={{ color: 'text.secondary' }}
+                            >
+                              <MoreHorizOutlinedIcon fontSize="small" />
+                            </IconButton>
+                          </Box>
+                        </TableCell>
                       </TableRow>
                     ))}
                   </TableBody>
                 </Table>
+
+                {/* Options Menu */}
+                <Menu
+                  anchorEl={menuAnchorEl}
+                  open={Boolean(menuAnchorEl)}
+                  onClose={handleMenuClose}
+                  anchorOrigin={{
+                    vertical: 'bottom',
+                    horizontal: 'right',
+                  }}
+                  transformOrigin={{
+                    vertical: 'top',
+                    horizontal: 'right',
+                  }}
+                >
+                  <MenuItem onClick={handleEdit}>
+                    <ListItemIcon>
+                      <EditIcon fontSize="small" sx={{ color: 'text.secondary' }} />
+                    </ListItemIcon>
+                    <ListItemText sx={{ color: 'text.secondary' }}>Edit</ListItemText>
+                  </MenuItem>
+                  <MenuItem onClick={handleDeleteClick}>
+                    <ListItemIcon>
+                      <DeleteIcon fontSize="small" sx={{ color: 'text.secondary' }} />
+                    </ListItemIcon>
+                    <ListItemText sx={{ color: 'text.secondary' }}>Delete</ListItemText>
+                  </MenuItem>
+                </Menu>
+
+                {/* Delete Confirmation Dialog */}
+                <Dialog
+                  open={deleteDialogOpen}
+                  onClose={() => setDeleteDialogOpen(false)}
+                  maxWidth="xs"
+                  fullWidth
+                >
+                  <DialogTitle>Delete AI Assistant</DialogTitle>
+                  <DialogContent>
+                    Are you sure you want to delete "{selectedAssistant?.name}"? This action cannot be undone.
+                  </DialogContent>
+                  <DialogActions>
+                    <Button
+                      onClick={() => setDeleteDialogOpen(false)}
+                      sx={{ textTransform: 'none' }}
+                    >
+                      Cancel
+                    </Button>
+                    <Button
+                      onClick={handleDeleteConfirm}
+                      color="error"
+                      variant="contained"
+                      sx={{ textTransform: 'none' }}
+                    >
+                      Delete
+                    </Button>
+                  </DialogActions>
+                </Dialog>
               </CardContent>
             </Card>
           </Grid>
@@ -1015,18 +1152,20 @@ If these steps don't resolve the issue, let me know, and I can provide more deta
       )}
 
       {/* Save Button */}
-      <Grid item xs={12}>
-        <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 3 }}>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={handleSave}
-            sx={{ textTransform: 'none' }}
-          >
-            Save changes
-          </Button>
-        </Box>
-      </Grid>
+      {activeTab !== 3 && (
+        <Grid item xs={12}>
+          <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 3 }}>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleSave}
+              sx={{ textTransform: 'none' }}
+            >
+              Save changes
+            </Button>
+          </Box>
+        </Grid>
+      )}
 
       {/* WhatsApp Connection Dialog */}
       <Dialog 

@@ -11,6 +11,7 @@ import Dashboard1 from "../views/dashboards/Dashboard1.js";
 import MyBilling from "../views/my-billing/MyBilling";
 import BillDetails from "../views/my-billing/BillDetails";
 import Settings from "../views/Settings/Settings.js";
+import AIAssistantForm from "../views/Settings/AIAssistantForm.js";
 import LoginSelector from "../views/auth/LoginSelector.js";
 import ModernLogin from "../views/auth/ModernLogin.js";
 import Signup from "../views/auth/Signup.js";
@@ -39,6 +40,7 @@ const ThemeRoutes = [
       { path: "my-billing", element: <MyBilling /> },
       { path: "my-billing/:billId", element: <BillDetails /> },
       { path: "settings", element: <Settings /> },
+      { path: "settings/ai-assistant", element: <AIAssistantForm /> },
       { path: "admin", element: <InvotraAdmin /> },
       { path: "usage", element: <Usage /> },
     ],

@@ -5,6 +5,8 @@ import Themeroutes from "./routes/Router";
 import { AuthProvider } from "./contexts/AuthContext";
 import { AuthBackgroundProvider } from "./contexts/AuthBackgroundContext";
 import { ThemeProvider } from "./contexts/ThemeContext";
+import { AIAssistantsProvider } from "./contexts/AIAssistantsContext";
+import { NotificationProvider } from "./contexts/NotificationContext";
 
 function App() {
   const routing = useRoutes(Themeroutes);
@@ -13,8 +15,12 @@ function App() {
     <ThemeProvider>
       <AuthProvider>
         <AuthBackgroundProvider>
-          <CssBaseline />
-          {routing}
+          <NotificationProvider>
+            <AIAssistantsProvider>
+              <CssBaseline />
+              {routing}
+            </AIAssistantsProvider>
+          </NotificationProvider>
         </AuthBackgroundProvider>
       </AuthProvider>
     </ThemeProvider>
