@@ -1,70 +1,220 @@
-# Getting Started with Create React App
+# Arto App
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A modern React-based dashboard application built with Material-UI and Supabase integration. Arto App provides a sleek and intuitive interface for managing your business operations.
 
-## Available Scripts
+## 🌟 Features
 
-In the project directory, you can run:
+- **Modern UI/UX**: Built with Material-UI (MUI) components for a polished and responsive design
+- **Authentication**: Secure user authentication system using Supabase
+- **Theme Customization**: Support for both light and dark themes
+- **Dashboard Analytics**: Interactive charts and data visualization using ApexCharts
+- **Responsive Design**: Fully responsive layout that works on desktop and mobile devices
+- **User Management**: Complete user authentication flow with signup and login functionality
+- **Settings Management**: Customizable user settings and preferences
+- **Billing Integration**: Built-in billing and subscription management
 
-### `npm start`
+## 🚀 Demo
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+Check out the live demo: [Arto App Demo](https://brendan-carikas.github.io/designapps)
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## 🛠️ Built With
 
-### `npm test`
+- React 18
+- Material-UI v5
+- Supabase
+- ApexCharts
+- React Router v6
+- Emotion (for styled components)
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## 🔧 Getting Started
 
-### `npm run build`
+1. Clone the repository
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+3. Start the development server:
+   ```bash
+   npm start
+   ```
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## 📋 Product Specification
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### Functional Specifications
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+#### Core Features
+1. **User Authentication & Authorization**
+   - User registration and login
+   - Role-based access control (admin/user)
+   - Password reset functionality
+   - Session management
 
-### `npm run eject`
+2. **Dashboard Analytics**
+   - Real-time data visualization
+   - Interactive charts and graphs
+   - Customizable date ranges
+   - Export functionality for reports
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+3. **Usage Tracking**
+   - Credit system monitoring
+   - Usage statistics and trends
+   - Usage limits and alerts
+   - Historical usage data
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+4. **Settings Management**
+   - Theme customization (Light/Dark)
+   - Profile management
+   - Notification preferences
+   - Account settings
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+5. **Billing Integration**
+   - Subscription management
+   - Payment processing
+   - Invoice generation
+   - Billing history
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+### Non-Functional Specifications
 
-## Learn More
+1. **Performance**
+   - Page load time < 2 seconds
+   - API response time < 500ms
+   - Support for up to 10,000 concurrent users
+   - Smooth animations (60 FPS)
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+2. **Security**
+   - HTTPS/SSL encryption
+   - JWT token-based authentication
+   - XSS and CSRF protection
+   - Rate limiting
+   - Data encryption at rest
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+3. **Reliability**
+   - 99.9% uptime
+   - Automatic error recovery
+   - Data backup and recovery
+   - Graceful degradation
 
-### Code Splitting
+4. **Usability**
+   - Responsive design (mobile-first)
+   - Accessibility (WCAG 2.1 compliance)
+   - Intuitive navigation
+   - Cross-browser compatibility
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+5. **Scalability**
+   - Horizontal scaling capability
+   - Efficient caching
+   - Load balancing ready
+   - Database optimization
 
-### Analyzing the Bundle Size
+### Technical Specifications
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+1. **Frontend Technology Stack**
+   - React 18.2.0
+   - Material-UI 5.13.4
+   - React Router 6.12.1
+   - ApexCharts for data visualization
+   - Emotion for styled components
+   - React Context for state management
 
-### Making a Progressive Web App
+2. **Backend Services**
+   - Supabase for authentication and database
+   - RESTful API architecture
+   - PostgreSQL database
+   - Real-time subscriptions
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+3. **Development & Deployment**
+   - Node.js environment
+   - npm for package management
+   - GitHub Pages for hosting
+   - Continuous Integration/Deployment
 
-### Advanced Configuration
+4. **Browser Support**
+   - Chrome (latest 2 versions)
+   - Firefox (latest 2 versions)
+   - Safari (latest 2 versions)
+   - Edge (latest 2 versions)
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+5. **Development Standards**
+   - ESLint for code quality
+   - Prettier for code formatting
+   - Git flow for version control
+   - Component-based architecture
 
-### Deployment
+## 🎨 Theme System
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+### Theme Variants
+1. **Modern Theme**
+   - Primary: Ethereal indigo (#4f46e5)
+   - Secondary: Ethereal violet (#8b5cf6)
+   - Background: Cool white (#f8fafc)
+   - Success: Vibrant emerald (#22c55e)
+   - Error: Deep rose (#e11d48)
+   - Custom shadows and typography
 
-### `npm run build` fails to minify
+2. **Dark Theme**
+   - Dark mode optimized
+   - Contrast-aware components
+   - Accessible color palette
+   - Custom dark mode shadows
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+3. **Theme Features**
+   - RTL support
+   - Custom typography scales
+   - Responsive spacing system
+   - Component-specific theming
+   - Custom color palette
+   - Material Design foundations
+
+## 🏗️ Component Structure
+
+```
+src/
+├── assets/                 # Static assets and global styles
+│   ├── global/            # Global theme configurations
+│   └── images/            # Image assets
+├── components/            # Reusable UI components
+│   ├── common/           # Shared components
+│   └── dashboard/        # Dashboard-specific components
+├── contexts/             # React Context providers
+│   ├── ThemeContext.js   # Theme management
+│   └── AuthContext.js    # Authentication state
+├── layouts/              # Page layout components
+│   ├── FullLayout/      # Main application layout
+│   └── Header/          # Navigation components
+├── lib/                  # Utility functions and helpers
+├── routes/              # Route configurations
+└── views/               # Page components
+    ├── dashboards/      # Dashboard views
+    ├── auth/           # Authentication pages
+    ├── settings/       # Settings pages
+    └── usage/          # Usage tracking pages
+```
+
+### Key Components
+1. **Layout Components**
+   - FullLayout: Main application shell
+   - Header: Navigation and user menu
+   - Sidebar: Collapsible navigation menu
+   - Footer: Application footer
+
+2. **Dashboard Components**
+   - Usage tracking widgets
+   - Analytics charts
+   - Status cards
+   - Data tables
+
+3. **Authentication Components**
+   - Login forms
+   - Registration forms
+   - Password reset
+   - Profile management
+
+4. **Common Components**
+   - Custom buttons
+   - Form controls
+   - Modal dialogs
+   - Loading indicators
+
+## 📝 License
+
+This project is proprietary software. All rights reserved.
