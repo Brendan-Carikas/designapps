@@ -95,11 +95,11 @@ const AIAssistantForm = () => {
       addAssistant(formData);
       showNotification(`AI Assistant "${formData.name}" has been created successfully`);
     }
-    navigate('/app/settings?tab=3');
+    navigate('/app/settings?tab=2');
   };
 
   const handleCancel = () => {
-    navigate('/app/settings?tab=3');
+    navigate('/app/settings?tab=2');
   };
 
   return (
