@@ -42,19 +42,14 @@ import {
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import WhatsAppIcon from '@mui/icons-material/WhatsApp';
-import ImageIcon from '@mui/icons-material/Image';
-import ColorLensIcon from '@mui/icons-material/ColorLens';
 import UploadFileIcon from '@mui/icons-material/UploadFile';
-import SettingsIcon from '@mui/icons-material/Settings';
-import SchoolIcon from '@mui/icons-material/School';
-import TextSnippetIcon from '@mui/icons-material/TextSnippet';
-import FolderOpenIcon from '@mui/icons-material/FolderOpen';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import SearchIcon from '@mui/icons-material/Search';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import LinkIcon from '@mui/icons-material/Link';
 import ClearIcon from '@mui/icons-material/Clear';
 import EditIcon from '@mui/icons-material/Edit';
+import SchoolIcon from '@mui/icons-material/School';
 import MoreHorizOutlinedIcon from '@mui/icons-material/MoreHorizOutlined';
 import artoIcon from '../../assets/images/arto-icon-crop.png';
 import { useNavigate, useSearchParams } from 'react-router-dom';
@@ -74,14 +69,7 @@ const Settings = () => {
   const [technicalInstructions, setTechnicalInstructions] = useState(() => {
     return localStorage.getItem('technicalInstructions') || '';
   });
-  const [files, setFiles] = useState(() => {
-    const savedFiles = localStorage.getItem('uploadedFiles');
-    return savedFiles ? JSON.parse(savedFiles) : [];
-  });
   const [logo, setLogo] = useState(null);
-  const [whatsappDialogOpen, setWhatsappDialogOpen] = useState(false);
-  const [whatsappNumber, setWhatsappNumber] = useState('');
-  const [connectedNumber, setConnectedNumber] = useState('');
   const [isExpanded, setIsExpanded] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [drawerContent, setDrawerContent] = useState('');
@@ -96,6 +84,12 @@ const Settings = () => {
   const [selectedAssistant, setSelectedAssistant] = useState(null);
   const [menuAnchorEl, setMenuAnchorEl] = useState(null);
   const [activeAssistant, setActiveAssistant] = useState(null);
+  const [files, setFiles] = useState(() => {
+    const savedFiles = localStorage.getItem('uploadedFiles');
+    return savedFiles ? JSON.parse(savedFiles) : [];
+  });
+  const [whatsappDialogOpen, setWhatsappDialogOpen] = useState(false);
+  const [whatsappNumber, setWhatsappNumber] = useState('');
   const contentRef = useRef(null);
 
   const technicalContent = (
@@ -725,7 +719,6 @@ If these steps don't resolve the issue, let me know, and I can provide more deta
         <Tabs value={activeTab} onChange={handleTabChange} aria-label="settings tabs" sx={{ mb: 3 }}>
           <Tab label="General" />
           <Tab label="Instructions" />
-          <Tab label="Theme" />
           <Tab label="AI Assistants" />
         </Tabs>
       </Box>
@@ -751,20 +744,6 @@ If these steps don't resolve the issue, let me know, and I can provide more deta
                   >
                     Connect WhatsApp Business
                   </Button>
-                  {connectedNumber && (
-                    <Typography 
-                      variant="body2" 
-                      color="text.secondary"
-                      sx={{ 
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: 1 
-                      }}
-                    >
-                      <WhatsAppIcon fontSize="small" />
-                      Connected: {connectedNumber}
-                    </Typography>
-                  )}
                 </Box>
               </CardContent>
             </Card>
@@ -906,22 +885,6 @@ If these steps don't resolve the issue, let me know, and I can provide more deta
                     </Typography>
                   </Box>
 
-                  {files.length > 0 && (
-                    <List>
-                      {files.map((file, index) => (
-                        <ListItem
-                          key={index}
-                          secondaryAction={
-                            <IconButton edge="end" aria-label="delete" onClick={() => handleRemoveFile(index)}>
-                              <DeleteIcon />
-                            </IconButton>
-                          }
-                        >
-                          <ListItemText primary={file.name} secondary={`${(file.size / 1024).toFixed(2)} KB`} />
-                        </ListItem>
-                      ))}
-                    </List>
-                  )}
                 </Box>
               </CardContent>
             </Card>
@@ -929,90 +892,15 @@ If these steps don't resolve the issue, let me know, and I can provide more deta
         </Grid>
       )}
 
-      {/* Theme Tab */}
+      {/* AI Assistants Tab */}
       {activeTab === 2 && (
         <Grid container spacing={3}>
           <Grid item xs={12}>
             <Card sx={{ border: '1px solid', borderColor: 'divider', boxShadow: 'none', borderRadius: 2 }}>
               <CardContent sx={{ p: 3 }}>
                 <Box display="flex" alignItems="center" mb={2}>
-                  <ColorLensIcon color="primary" sx={{ width: 40, height: 40, mr: 2 }} />
-                  <Typography variant="h5">Theme</Typography>
-                </Box>
-                <Divider sx={{ mb: 3 }} />
+                <img src={artoIcon} alt="Arto Icon" style={{ width: 29, height: 36, marginRight: 16, marginBottom: 0 }} />
 
-                <Box sx={{ mb: 3 }}>
-                  <TextField
-                    fullWidth
-                    label="App Name"
-                    value={appName}
-                    onChange={(e) => setAppName(e.target.value)}
-                    variant="outlined"
-                  />
-                </Box>
-                
-                <Box sx={{ mb: 3 }}>
-                  <Typography variant="subtitle2" gutterBottom>
-                    App Logo
-                  </Typography>
-                  <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 2 }}>
-                    {logo ? (
-                      <Box
-                        component="img"
-                        src={logo}
-                        alt="App Logo"
-                        sx={{ width: 440, height: 80, borderRadius: 1, objectFit: 'contain' }}
-                      />
-                    ) : (
-                      <Box
-                        sx={{
-                          width: 440,
-                          height: 80,
-                          borderRadius: 1,
-                          border: '1px dashed',
-                          borderColor: 'divider',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                        }}
-                      >
-                        <ImageIcon color="action" sx={{ fontSize: 40 }} />
-                      </Box>
-                    )}
-                    <Button
-                      component={logo ? "button" : "label"}
-                      variant="outlined"
-                      sx={{ textTransform: 'none' }}
-                      onClick={logo ? handleLogoRemove : undefined}
-                    >
-                      {logo ? 'Remove image' : 'Upload image'}
-                      {!logo && (
-                        <input
-                          type="file"
-                          hidden
-                          accept="image/*"
-                          onChange={handleLogoChange}
-                        />
-                      )}
-                    </Button>
-                    <Typography variant="caption" color="textSecondary">
-                      Recommended size: 220px (maximum width) x 40px (minimum height) pixels. PNG or JPG format.
-                    </Typography>
-                  </Box>
-                </Box>
-              </CardContent>
-            </Card>
-          </Grid>
-        </Grid>
-      )}
-
-      {/* Table Tab */}
-      {activeTab === 3 && (
-        <Grid container spacing={3}>
-          <Grid item xs={12}>
-            <Card sx={{ border: '1px solid', borderColor: 'divider', boxShadow: 'none', borderRadius: 2 }}>
-              <CardContent sx={{ p: 3 }}>
-                <Box display="flex" alignItems="center" mb={2}>
                   <Typography variant="h5">AI Assistants</Typography>
                   <Box sx={{ flexGrow: 1 }} />
                   <Button
@@ -1026,68 +914,72 @@ If these steps don't resolve the issue, let me know, and I can provide more deta
                 </Box>
                 <Divider sx={{ mb: 3 }} />
                 
-                <Table>
-                  <TableHead>
-                    <TableRow>
-                      <TableCell>Name</TableCell>
-                      <TableCell>Description</TableCell>
-                      <TableCell>Model</TableCell>
-                      <TableCell>Max Tokens</TableCell>
-                      <TableCell>Temperature</TableCell>
-                      <TableCell>Status</TableCell>
-                      <TableCell>Created</TableCell>
-                      <TableCell>Actions</TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {assistants.map((assistant) => (
-                      <TableRow key={assistant.id}>
-                        <TableCell>{assistant.name}</TableCell>
-                        <TableCell>
-                          <Typography
-                            sx={{
-                              maxWidth: 200,
-                              whiteSpace: 'nowrap',
-                              overflow: 'hidden',
-                              textOverflow: 'ellipsis'
-                            }}
-                          >
-                            {assistant.description || '-'}
-                          </Typography>
-                        </TableCell>
-                        <TableCell>{assistant.model}</TableCell>
-                        <TableCell>{assistant.maxTokens}</TableCell>
-                        <TableCell>{assistant.temperature}</TableCell>
-                        <TableCell>
-                          <Box
-                            sx={{
-                              backgroundColor: assistant.status === 'Active' ? '#e8f5e9' : '#ffebee',
-                              color: assistant.status === 'Active' ? '#2e7d32' : '#c62828',
-                              borderRadius: 1,
-                              px: 1,
-                              py: 0.5,
-                              display: 'inline-block',
-                            }}
-                          >
-                            {assistant.status}
-                          </Box>
-                        </TableCell>
-                        <TableCell>{assistant.date}</TableCell>
-                        <TableCell>
-                          <Box sx={{ display: 'flex', gap: 1 }}>
-                            <IconButton
-                              size="small"
-                              onClick={(e) => handleMenuOpen(e, assistant)}
-                              sx={{ color: 'text.secondary' }}
-                            >
-                              <MoreHorizOutlinedIcon fontSize="small" />
-                            </IconButton>
-                          </Box>
-                        </TableCell>
+                <Box sx={{ overflowX: 'auto', width: '100%', WebkitOverflowScrolling: 'touch' }}>
+                  <Table sx={{ minWidth: 650 }}>
+                    <TableHead>
+                      <TableRow>
+                        <TableCell>Name</TableCell>
+                        <TableCell>Description</TableCell>
+                        <TableCell>Model</TableCell>
+                        <TableCell>Max Tokens</TableCell>
+                        <TableCell>Temperature</TableCell>
+                        <TableCell>Status</TableCell>
+                        <TableCell>Created</TableCell>
+                        <TableCell>Actions</TableCell>
                       </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
+                    </TableHead>
+                    <TableBody>
+                      {assistants.map((assistant) => (
+                        <TableRow key={assistant.id}>
+                          <TableCell>{assistant.name}</TableCell>
+                          <TableCell>
+                            <Typography
+                              variant="body2"
+                              sx={{
+                                maxWidth: 200,
+                                whiteSpace: 'nowrap',
+                                overflow: 'hidden',
+                                textOverflow: 'ellipsis',
+                                fontSize: 'inherit'
+                              }}
+                            >
+                              {assistant.description || '-'}
+                            </Typography>
+                          </TableCell>
+                          <TableCell>{assistant.model}</TableCell>
+                          <TableCell>{assistant.maxTokens}</TableCell>
+                          <TableCell>{assistant.temperature}</TableCell>
+                          <TableCell>
+                            <Box
+                              sx={{
+                                backgroundColor: assistant.status === 'Active' ? '#e8f5e9' : '#ffebee',
+                                color: assistant.status === 'Active' ? '#2e7d32' : '#c62828',
+                                borderRadius: 1,
+                                px: 1,
+                                py: 0.5,
+                                display: 'inline-block',
+                              }}
+                            >
+                              {assistant.status}
+                            </Box>
+                          </TableCell>
+                          <TableCell>{assistant.date}</TableCell>
+                          <TableCell>
+                            <Box sx={{ display: 'flex', gap: 1 }}>
+                              <IconButton
+                                size="small"
+                                onClick={(e) => handleMenuOpen(e, assistant)}
+                                sx={{ color: 'text.secondary' }}
+                              >
+                                <MoreHorizOutlinedIcon fontSize="small" />
+                              </IconButton>
+                            </Box>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </Box>
 
                 {/* Options Menu */}
                 <Menu
@@ -1152,7 +1044,7 @@ If these steps don't resolve the issue, let me know, and I can provide more deta
       )}
 
       {/* Save Button */}
-      {activeTab !== 3 && (
+      {activeTab !== 2 && (
         <Grid item xs={12}>
           <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 3 }}>
             <Button

@@ -14,10 +14,13 @@ import {
   Switch,
   FormControlLabel,
   Divider,
+  IconButton,
 } from '@mui/material';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAIAssistants } from '../../contexts/AIAssistantsContext';
 import { useNotification } from '../../contexts/NotificationContext';
+import ColorLensIcon from '@mui/icons-material/ColorLens';
+import ImageIcon from '@mui/icons-material/Image';
 
 const AIAssistantForm = () => {
   const navigate = useNavigate();
@@ -33,6 +36,8 @@ const AIAssistantForm = () => {
     maxTokens: 2000,
     isActive: true,
   });
+  const [appName, setAppName] = useState('My AI Assistant');
+  const [logo, setLogo] = useState(null);
 
   useEffect(() => {
     if (assistantId) {
@@ -66,6 +71,21 @@ const AIAssistantForm = () => {
     }));
   };
 
+  const handleLogoChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setLogo(e.target.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleLogoRemove = () => {
+    setLogo(null);
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     if (assistantId) {
@@ -83,8 +103,18 @@ const AIAssistantForm = () => {
   };
 
   return (
-    <Box sx={{ p: 3 }}>
-      <Card sx={{ border: '1px solid', borderColor: 'divider', boxShadow: 'none', borderRadius: 2 }}>
+    <Box sx={{ 
+      position: 'fixed',
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      zIndex: 1200,
+      bgcolor: 'background.default',
+      overflow: 'auto',
+      p: 3
+    }}>
+      <Card sx={{ border: '1px solid', borderColor: 'divider', boxShadow: 'none', borderRadius: 2, maxWidth: 800, mx: 'auto', mb: 3 }}>
         <CardContent sx={{ p: 3 }}>
           <Box display="flex" alignItems="center" mb={2}>
             <Typography variant="h5">
@@ -192,6 +222,76 @@ const AIAssistantForm = () => {
               </Grid>
             </Grid>
           </form>
+        </CardContent>
+      </Card>
+
+      <Card sx={{ border: '1px solid', borderColor: 'divider', boxShadow: 'none', borderRadius: 2, maxWidth: 800, mx: 'auto' }}>
+        <CardContent sx={{ p: 3 }}>
+          <Box display="flex" alignItems="center" mb={2}>
+            <ColorLensIcon color="primary" sx={{ width: 40, height: 40, mr: 2 }} />
+            <Typography variant="h5">Theme</Typography>
+          </Box>
+          <Divider sx={{ mb: 3 }} />
+
+          <Box sx={{ mb: 3 }}>
+            <TextField
+              fullWidth
+              label="App Name"
+              value={appName}
+              onChange={(e) => setAppName(e.target.value)}
+              variant="outlined"
+            />
+          </Box>
+          
+          <Box sx={{ mb: 3 }}>
+            <Typography variant="subtitle2" gutterBottom>
+              App Logo
+            </Typography>
+            <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 2 }}>
+              {logo ? (
+                <Box
+                  component="img"
+                  src={logo}
+                  alt="App Logo"
+                  sx={{ width: 440, height: 80, borderRadius: 1, objectFit: 'contain' }}
+                />
+              ) : (
+                <Box
+                  sx={{
+                    width: 440,
+                    height: 80,
+                    borderRadius: 1,
+                    border: '1px dashed',
+                    borderColor: 'divider',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}
+                >
+                  <ImageIcon color="action" sx={{ fontSize: 40 }} />
+                </Box>
+              )}
+              <Button
+                component={logo ? "button" : "label"}
+                variant="outlined"
+                sx={{ textTransform: 'none' }}
+                onClick={logo ? handleLogoRemove : undefined}
+              >
+                {logo ? 'Remove image' : 'Upload image'}
+                {!logo && (
+                  <input
+                    type="file"
+                    hidden
+                    accept="image/*"
+                    onChange={handleLogoChange}
+                  />
+                )}
+              </Button>
+              <Typography variant="caption" color="textSecondary">
+                Recommended size: 220px (maximum width) x 40px (minimum height) pixels. PNG or JPG format.
+              </Typography>
+            </Box>
+          </Box>
         </CardContent>
       </Card>
     </Box>
