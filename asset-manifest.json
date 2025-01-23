@@ -1,17 +1,17 @@
 {
   "files": {
-    "main.js": "/designapps/static/js/main.e08c221a.js",
+    "main.js": "/designapps/static/js/main.563e20f4.js",
     "static/js/289.204c7ce8.chunk.js": "/designapps/static/js/289.204c7ce8.chunk.js",
     "static/js/787.d468af10.chunk.js": "/designapps/static/js/787.d468af10.chunk.js",
     "static/media/auth-bg.png": "/designapps/static/media/auth-bg.bfe4acd6792aa5014125.png",
     "static/media/arto-site-logo.png": "/designapps/static/media/arto-site-logo.71e177eae6031e965b47.png",
     "static/media/arto-site-logo-reverse.png": "/designapps/static/media/arto-site-logo-reverse.ddc688591cc712870686.png",
     "index.html": "/designapps/index.html",
-    "main.e08c221a.js.map": "/designapps/static/js/main.e08c221a.js.map",
+    "main.563e20f4.js.map": "/designapps/static/js/main.563e20f4.js.map",
     "289.204c7ce8.chunk.js.map": "/designapps/static/js/289.204c7ce8.chunk.js.map",
     "787.d468af10.chunk.js.map": "/designapps/static/js/787.d468af10.chunk.js.map"
   },
   "entrypoints": [
-    "static/js/main.e08c221a.js"
+    "static/js/main.563e20f4.js"
   ]
 }
