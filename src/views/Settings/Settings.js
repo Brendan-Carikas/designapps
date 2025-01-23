@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import {
   Box,
   Typography,
@@ -40,22 +40,30 @@ import {
 import DeleteIcon from '@mui/icons-material/Delete';
 import WhatsAppIcon from '@mui/icons-material/WhatsApp';
 import ImageIcon from '@mui/icons-material/Image';
+import ColorLensIcon from '@mui/icons-material/ColorLens';
 import UploadFileIcon from '@mui/icons-material/UploadFile';
 import SettingsIcon from '@mui/icons-material/Settings';
+import SchoolIcon from '@mui/icons-material/School';
 import TextSnippetIcon from '@mui/icons-material/TextSnippet';
 import FolderOpenIcon from '@mui/icons-material/FolderOpen';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import SearchIcon from '@mui/icons-material/Search';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
-import SmartToyIcon from '@mui/icons-material/SmartToy';
 import LinkIcon from '@mui/icons-material/Link';
 import ClearIcon from '@mui/icons-material/Clear';
+import artoIcon from '../../assets/images/arto-icon-crop.png';
 
 const Settings = () => {
   const [appName, setAppName] = useState('My AI Assistant');
-  const [corePurposeInstructions, setCorePurposeInstructions] = useState('');
-  const [styleToneInstructions, setStyleToneInstructions] = useState('');
-  const [technicalInstructions, setTechnicalInstructions] = useState('');
+  const [corePurposeInstructions, setCorePurposeInstructions] = useState(() => {
+    return localStorage.getItem('corePurposeInstructions') || '';
+  });
+  const [styleToneInstructions, setStyleToneInstructions] = useState(() => {
+    return localStorage.getItem('styleToneInstructions') || '';
+  });
+  const [technicalInstructions, setTechnicalInstructions] = useState(() => {
+    return localStorage.getItem('technicalInstructions') || '';
+  });
   const [files, setFiles] = useState(() => {
     const savedFiles = localStorage.getItem('uploadedFiles');
     return savedFiles ? JSON.parse(savedFiles) : [];
@@ -71,6 +79,11 @@ const Settings = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [copyTooltip, setCopyTooltip] = useState('Copy');
   const [activeTab, setActiveTab] = useState(0);
+  const [tableData] = useState([
+    { name: 'Item 1', status: 'Active', date: '2025-01-22' },
+    { name: 'Item 2', status: 'Inactive', date: '2025-01-21' },
+    { name: 'Item 3', status: 'Active', date: '2025-01-20' },
+  ]);
   const contentRef = useRef(null);
 
   const technicalContent = (
@@ -650,6 +663,18 @@ If these steps don't resolve the issue, let me know, and I can provide more deta
     setActiveTab(newValue);
   };
 
+  useEffect(() => {
+    localStorage.setItem('corePurposeInstructions', corePurposeInstructions);
+  }, [corePurposeInstructions]);
+
+  useEffect(() => {
+    localStorage.setItem('styleToneInstructions', styleToneInstructions);
+  }, [styleToneInstructions]);
+
+  useEffect(() => {
+    localStorage.setItem('technicalInstructions', technicalInstructions);
+  }, [technicalInstructions]);
+
   return (
     <Box sx={{ p: 3 }}>
       <Typography variant="h2" sx={{ mb: 3, ml: 1.2 }}>
@@ -657,11 +682,11 @@ If these steps don't resolve the issue, let me know, and I can provide more deta
       </Typography>
       
       <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 3 }}>
-        <Tabs value={activeTab} onChange={handleTabChange} aria-label="settings tabs">
-          <Tab label="Connect" />
+        <Tabs value={activeTab} onChange={handleTabChange} aria-label="settings tabs" sx={{ mb: 3 }}>
+          <Tab label="General" />
           <Tab label="Instructions" />
-          <Tab label="Knowledge Base" />
           <Tab label="Theme" />
+          <Tab label="AI Assistants" />
         </Tabs>
       </Box>
 
@@ -715,10 +740,16 @@ If these steps don't resolve the issue, let me know, and I can provide more deta
               <CardHeader
                 title={
                   <Box display="flex" alignItems="center">
-                    <SmartToyIcon color="primary" sx={{ width: 40, height: 40, mr: 2 }} />
+                    <img src={artoIcon} alt="Arto Icon" style={{ width: 29, height: 36, marginRight: 16, marginBottom: 0 }} />
                     <Typography variant="h5">Instructions for AI Assistant</Typography>
+                  
+                   
+                  
                   </Box>
+
+                  
                 }
+                
                 action={
                   <Button 
                     variant="text" 
@@ -731,8 +762,10 @@ If these steps don't resolve the issue, let me know, and I can provide more deta
                   </Button>
                 }
               />
+           
+              
               <CardContent sx={{ p: 3 }}>
-                
+              <Divider sx={{ mb: 3 }} />
                 <Box sx={{ mb: 3 }}>
                   <Accordion>
                     <AccordionSummary expandIcon={<ExpandMoreIcon />}>
@@ -802,81 +835,54 @@ If these steps don't resolve the issue, let me know, and I can provide more deta
                     </AccordionDetails>
                   </Accordion>
                 </Box>
-              </CardContent>
-            </Card>
-          </Grid>
-        </Grid>
-      )}
 
-      {/* Knowledge Base Tab */}
-      {activeTab === 2 && (
-        <Grid container spacing={3}>
-          <Grid item xs={12}>
-            <Card sx={{ border: '1px solid', borderColor: 'divider', boxShadow: 'none', borderRadius: 2 }}>
-              <CardContent sx={{ p: 3 }}>
-                <Box display="flex" alignItems="center" mb={2}>
-                  <TextSnippetIcon color="primary" sx={{ width: 40, height: 40, mr: 2 }} />
-                  <Typography variant="h5">Knowledge Base</Typography>
-                </Box>
-                <Divider sx={{ mb: 3 }} />
-                
-                <Box sx={{ mb: 3 }}>
-                  <Button
-                    variant="outlined"
-                    component="label"
-                    startIcon={<UploadFileIcon />}
-                    sx={{ textTransform: 'none' }}
-                  >
-                    Upload Files
-                    <input
-                      type="file"
-                      hidden
-                      multiple
-                      onChange={handleFileUpload}
-                      accept=".txt,.pdf,.doc,.docx"
-                    />
-                  </Button>
-                  <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mt: 1 }}>
-                    Accepted file formats: TXT, PDF, DOC, DOCX
-                  </Typography>
-                </Box>
+                <Box sx={{ mb: 3, mt: 9 }}>
+                  <Box display="flex" alignItems="center" mb={2}>
+                    <SchoolIcon color="primary" sx={{ width: 24, height: 24, mr: 2 }} />
+                    <Typography variant="h5">Knowledge Base</Typography>
+                    
+                  </Box>
+                  
+                  <Box sx={{ mb: 3 }}>
+                  <Divider sx={{ mb: 3, mt: 4 }} />
 
-                {files.length > 0 && (
-                  <Table>
-                    <TableHead>
-                      <TableRow>
-                        <TableCell>File Name</TableCell>
-                        <TableCell align="right">Size</TableCell>
-                        <TableCell align="right">Uploaded At</TableCell>
-                        <TableCell align="right">Actions</TableCell>
-                      </TableRow>
-                    </TableHead>
-                    <TableBody>
+                    <Button
+                      variant="outlined"
+                      component="label"
+                      startIcon={<UploadFileIcon />}
+                      sx={{ textTransform: 'none' }}
+                    >
+                      Upload Files
+                      <input
+                        type="file"
+                        hidden
+                        multiple
+                        onChange={handleFileUpload}
+                        accept=".txt,.pdf,.doc,.docx"
+                      />
+                    </Button>
+                    <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mt: 1 }}>
+                      Accepted file formats: TXT, PDF, DOC, DOCX
+                    </Typography>
+                  </Box>
+
+                  {files.length > 0 && (
+                    <List>
                       {files.map((file, index) => (
-                        <TableRow key={index}>
-                          <TableCell component="th" scope="row">
-                            {file.name}
-                          </TableCell>
-                          <TableCell align="right">
-                            {(file.size / 1024).toFixed(2)} KB
-                          </TableCell>
-                          <TableCell align="right">
-                            {file.uploadedAt}
-                          </TableCell>
-                          <TableCell align="right">
-                            <IconButton 
-                              edge="end" 
-                              onClick={() => handleRemoveFile(index)}
-                              size="small"
-                            >
+                        <ListItem
+                          key={index}
+                          secondaryAction={
+                            <IconButton edge="end" aria-label="delete" onClick={() => handleRemoveFile(index)}>
                               <DeleteIcon />
                             </IconButton>
-                          </TableCell>
-                        </TableRow>
+                          }
+                        >
+                          <ListItemText primary={file.name} secondary={`${(file.size / 1024).toFixed(2)} KB`} />
+                        </ListItem>
                       ))}
-                    </TableBody>
-                  </Table>
-                )}
+                    </List>
+                  )}
+                </Box>
               </CardContent>
             </Card>
           </Grid>
@@ -884,13 +890,13 @@ If these steps don't resolve the issue, let me know, and I can provide more deta
       )}
 
       {/* Theme Tab */}
-      {activeTab === 3 && (
+      {activeTab === 2 && (
         <Grid container spacing={3}>
           <Grid item xs={12}>
             <Card sx={{ border: '1px solid', borderColor: 'divider', boxShadow: 'none', borderRadius: 2 }}>
               <CardContent sx={{ p: 3 }}>
                 <Box display="flex" alignItems="center" mb={2}>
-                  <ImageIcon color="primary" sx={{ width: 40, height: 40, mr: 2 }} />
+                  <ColorLensIcon color="primary" sx={{ width: 40, height: 40, mr: 2 }} />
                   <Typography variant="h5">Theme</Typography>
                 </Box>
                 <Divider sx={{ mb: 3 }} />
@@ -954,6 +960,54 @@ If these steps don't resolve the issue, let me know, and I can provide more deta
                     </Typography>
                   </Box>
                 </Box>
+              </CardContent>
+            </Card>
+          </Grid>
+        </Grid>
+      )}
+
+      {/* Table Tab */}
+      {activeTab === 3 && (
+        <Grid container spacing={3}>
+          <Grid item xs={12}>
+            <Card sx={{ border: '1px solid', borderColor: 'divider', boxShadow: 'none', borderRadius: 2 }}>
+              <CardContent sx={{ p: 3 }}>
+                <Box display="flex" alignItems="center" mb={2}>
+                  <Typography variant="h5">AI Assistants</Typography>
+                </Box>
+                <Divider sx={{ mb: 3 }} />
+                
+                <Table>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell>Name</TableCell>
+                      <TableCell>Status</TableCell>
+                      <TableCell>Date</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {tableData.map((row, index) => (
+                      <TableRow key={index}>
+                        <TableCell>{row.name}</TableCell>
+                        <TableCell>
+                          <Box
+                            sx={{
+                              backgroundColor: row.status === 'Active' ? '#e8f5e9' : '#ffebee',
+                              color: row.status === 'Active' ? '#2e7d32' : '#c62828',
+                              borderRadius: 1,
+                              px: 1,
+                              py: 0.5,
+                              display: 'inline-block',
+                            }}
+                          >
+                            {row.status}
+                          </Box>
+                        </TableCell>
+                        <TableCell>{row.date}</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
               </CardContent>
             </Card>
           </Grid>

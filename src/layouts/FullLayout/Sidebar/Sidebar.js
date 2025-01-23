@@ -45,7 +45,7 @@ const Sidebar = (props) => {
                   cursor: "pointer",
                   borderRadius: 1,
                   ...(isActive && {
-                    backgroundColor: "primary.main",
+                    backgroundColor: "#1C1362",
                     color: "white",
                     "& .MuiListItemIcon-root": {
                       color: "white",
