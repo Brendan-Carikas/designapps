@@ -38,7 +38,7 @@ export function AuthBackgroundProvider({ children }) {
 
   const [isTwoColumn, setIsTwoColumn] = useState(() => {
     const saved = localStorage.getItem(AUTH_TWO_COLUMN_KEY);
-    return saved !== null ? JSON.parse(saved) : false;
+    return saved !== null ? JSON.parse(saved) : true;
   });
   
   const [unsavedChanges, setUnsavedChanges] = useState(false);
