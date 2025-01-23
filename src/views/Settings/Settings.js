@@ -92,6 +92,13 @@ const Settings = () => {
   const [whatsappNumber, setWhatsappNumber] = useState('');
   const contentRef = useRef(null);
 
+  useEffect(() => {
+    const tab = searchParams.get('tab');
+    if (tab !== null) {
+      setActiveTab(parseInt(tab));
+    }
+  }, [searchParams]);
+
   const technicalContent = (
     <>
       <h3>Core purpose</h3>
