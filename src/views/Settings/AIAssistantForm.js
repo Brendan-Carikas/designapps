@@ -32,6 +32,8 @@ import {
   List,
   ListItem,
   ListItemText,
+  AppBar,
+  Toolbar,
 } from '@mui/material';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAIAssistants } from '../../contexts/AIAssistantsContext';
@@ -401,6 +403,7 @@ const AIAssistantForm = () => {
     isActive: true,
   });
   const [logo, setLogo] = useState(null);
+  const [fabIcon, setFabIcon] = useState(null);
   const [corePurposeInstructions, setCorePurposeInstructions] = useState(() => {
     return localStorage.getItem('corePurposeInstructions') || '';
   });
@@ -581,8 +584,8 @@ const AIAssistantForm = () => {
     }));
   };
 
-  const handleLogoChange = (e) => {
-    const file = e.target.files[0];
+  const handleLogoChange = (event) => {
+    const file = event.target.files[0];
     if (file) {
       const reader = new FileReader();
       reader.onload = (e) => {
@@ -594,6 +597,21 @@ const AIAssistantForm = () => {
 
   const handleLogoRemove = () => {
     setLogo(null);
+  };
+
+  const handleFabIconChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setFabIcon(e.target.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleFabIconRemove = () => {
+    setFabIcon(null);
   };
 
   const handleSubmit = async (event) => {
@@ -663,481 +681,494 @@ const AIAssistantForm = () => {
       zIndex: 1200,
       bgcolor: 'background.default',
       overflow: 'auto',
-      p: 3
     }}>
-      <Card sx={{ border: '1px solid', borderColor: 'divider', boxShadow: 'none', borderRadius: 2, maxWidth: 800, mx: 'auto', mb: 3 }}>
-        <CardContent sx={{ p: 3 }}>
-          <Box display="flex" alignItems="center" mb={2}>
-            <Typography variant="h5">
-              {assistantId ? 'Edit AI Assistant' : 'Create AI Assistant'}
-            </Typography>
-          </Box>
-          <Divider sx={{ mb: 3 }} />
-          
-          <form onSubmit={handleSubmit}>
-            <Grid container spacing={3}>
-              <Grid item xs={12}>
-                <TextField
-                  fullWidth
-                  label="Assistant Name"
-                  name="name"
-                  value={formData.name}
-                  onChange={handleChange}
-                  required
-                />
-              </Grid>
-
-              <Grid item xs={12}>
-                <TextField
-                  fullWidth
-                  label="Description"
-                  name="description"
-                  value={formData.description}
-                  onChange={handleChange}
-                  multiline
-                  rows={4}
-                />
-              </Grid>
-
-              <Grid item xs={12} md={6}>
-                <FormControl fullWidth>
-                  <InputLabel>Model</InputLabel>
-                  <Select
-                    name="model"
-                    value={formData.model}
-                    onChange={handleChange}
-                    label="Model"
-                  >
-                    <MenuItem value="gpt-4">GPT-4</MenuItem>
-                    <MenuItem value="gpt-3.5-turbo">GPT-3.5 Turbo</MenuItem>
-                    <MenuItem value="claude-2">Claude 2</MenuItem>
-                  </Select>
-                </FormControl>
-              </Grid>
-
-              <Grid item xs={12} md={6}>
-                <TextField
-                  fullWidth
-                  label="Max Tokens"
-                  name="maxTokens"
-                  type="number"
-                  value={formData.maxTokens}
-                  onChange={handleChange}
-                  inputProps={{ min: 1, max: 4000 }}
-                />
-              </Grid>
-
-              <Grid item xs={12} md={6}>
-                <TextField
-                  fullWidth
-                  label="Temperature"
-                  name="temperature"
-                  type="number"
-                  value={formData.temperature}
-                  onChange={handleChange}
-                  inputProps={{ step: 0.1, min: 0, max: 2 }}
-                />
-              </Grid>
-
-              <Grid item xs={12} md={6}>
-                <FormControlLabel
-                  control={
-                    <Switch
-                      checked={formData.isActive}
-                      onChange={handleSwitchChange}
-                      name="isActive"
-                    />
-                  }
-                  label="Active"
-                />
-              </Grid>
-
-              <Grid item xs={12}>
-                <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 2, mt: 2 }}>
-                  <Button
-                    variant="outlined"
-                    onClick={handleCancel}
-                    sx={{ textTransform: 'none' }}
-                  >
-                    Cancel
-                  </Button>
-                  <Button
-                    type="submit"
-                    variant="contained"
-                    color="primary"
-                    sx={{ textTransform: 'none' }}
-                  >
-                    {assistantId ? 'Update Assistant' : 'Save Assistant'}
-                  </Button>
-                </Box>
-              </Grid>
-            </Grid>
-          </form>
-        </CardContent>
-      </Card>
-
-      <Card sx={{ border: '1px solid', borderColor: 'divider', boxShadow: 'none', borderRadius: 2, maxWidth: 800, mx: 'auto', mb: 3, marginTop: 4 }}>
-        <CardHeader
-          title={
-            <Box display="flex" alignItems="center">
-              <img src={artoIcon} alt="Arto Icon" style={{ width: 29, height: 36, marginRight: 16, marginBottom: 0 }} />
-              <Typography variant="h5">Instructions for AI Assistant</Typography>
-            </Box>
-          }
-          action={
-            <Button 
-              variant="text" 
-              onClick={() => handleShowExample(
-                technicalContent,
-                'Instruction library'
-              )}
-            >
-              Instruction library
-            </Button>
-          }
-        />
-        <CardContent sx={{ p: 3 }}>
-          <Divider sx={{ mb: 3 }} />
-          <Box sx={{ mb: 3 }}>
-            <Accordion>
-              <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                <Typography variant="h5">Core purpose</Typography>
-              </AccordionSummary>
-              <AccordionDetails>
-                <TextField
-                  fullWidth
-                  multiline
-                  rows={4}
-                  label="Core Purpose Instructions"
-                  value={corePurposeInstructions}
-                  onChange={(e) => setCorePurposeInstructions(e.target.value)}
-                  variant="outlined"
-                  placeholder="Enter core purpose instructions for the AI assistant..."
-                  sx={{ mt: 2 }}
-                />
-              </AccordionDetails>
-            </Accordion>
-          </Box>
-
-          <Box sx={{ mb: 3 }}>
-            <Accordion>
-              <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                <Typography variant="h5">Style and tone</Typography>
-              </AccordionSummary>
-              <AccordionDetails>
-                <TextField
-                  fullWidth
-                  multiline
-                  rows={4}
-                  label="Style and Tone Instructions"
-                  value={styleToneInstructions}
-                  onChange={(e) => setStyleToneInstructions(e.target.value)}
-                  variant="outlined"
-                  placeholder="Enter style and tone instructions for the AI assistant..."
-                  sx={{ mt: 2 }}
-                />
-              </AccordionDetails>
-            </Accordion>
-          </Box>
-
-          <Box sx={{ mb: 3 }}>
-            <Accordion>
-              <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                <Typography variant="h5">Technical and troubleshooting</Typography>
-              </AccordionSummary>
-              <AccordionDetails>
-                <TextField
-                  fullWidth
-                  multiline
-                  rows={4}
-                  label="Technical Instructions"
-                  value={technicalInstructions}
-                  onChange={(e) => setTechnicalInstructions(e.target.value)}
-                  variant="outlined"
-                  placeholder="Enter technical and troubleshooting instructions for the AI assistant..."
-                  sx={{ mt: 2 }}
-                />
-              </AccordionDetails>
-            </Accordion>
-          </Box>
-        </CardContent>
-      </Card>
-
-      <Card sx={{ border: '1px solid', borderColor: 'divider', boxShadow: 'none', borderRadius: 2, maxWidth: 800, mx: 'auto', mb: 3 }}>
-        <CardContent sx={{ p: 3 }}>
-          <Box display="flex" alignItems="center" mb={2}>
-            <LinkIcon color="primary" sx={{ width: 40, height: 40, mr: 2 }} />
-            <Typography variant="h5">Connect</Typography>
-          </Box>
-          <Divider sx={{ mb: 3 }} />
-          
-          <Box sx={{ mb: 3 }}>
-            <Button
-              variant="outlined"
-              color="primary"
-              sx={{ mb: 2, textTransform: 'none' }}
-              onClick={() => setWhatsappDialogOpen(true)}
-            >
-              Connect WhatsApp Business
-            </Button>
-          </Box>
-        </CardContent>
-      </Card>
-
-      <Box sx={{ height: 24 }} />
-
-      <Card sx={{ border: '1px solid', borderColor: 'divider', boxShadow: 'none', borderRadius: 2, maxWidth: 800, mx: 'auto', mb: 6 }}>
-        <CardContent sx={{ p: 3 }}>
-          <Box display="flex" alignItems="center" mb={2}>
-            <ColorLensIcon color="primary" sx={{ width: 40, height: 40, mr: 2 }} />
-            <Typography variant="h5">Theme</Typography>
-          </Box>
-          <Divider sx={{ mb: 3 }} />
-
-          <Box sx={{ mb: 3 }}>
-            <Typography variant="subtitle2" gutterBottom>
-              App Logo
-            </Typography>
-            <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 2 }}>
-              {logo ? (
-                <Box
-                  component="img"
-                  src={logo}
-                  alt="App Logo"
-                  sx={{ width: 440, height: 80, borderRadius: 1, objectFit: 'contain' }}
-                />
-              ) : (
-                <Box
-                  sx={{
-                    width: 440,
-                    height: 80,
-                    borderRadius: 1,
-                    border: '1px dashed',
-                    borderColor: 'divider',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                  }}
-                >
-                  <ImageIcon color="action" sx={{ fontSize: 40 }} />
-                </Box>
-              )}
-              <Button
-                component={logo ? "button" : "label"}
-                variant="outlined"
-                sx={{ textTransform: 'none' }}
-                onClick={logo ? handleLogoRemove : undefined}
-              >
-                {logo ? 'Remove image' : 'Upload image'}
-                {!logo && (
-                  <input
-                    type="file"
-                    hidden
-                    accept="image/*"
-                    onChange={handleLogoChange}
-                  />
-                )}
-              </Button>
-              <Typography variant="caption" color="textSecondary">
-                Recommended size: 120px (minimum height) pixels. PNG or SVG format.
-              </Typography>
-            </Box>
-          </Box>
-          <Box sx={{ mb: 3, mt:6 }}>
-            <Typography variant="subtitle2" gutterBottom>
-              Chat FAB icon
-            </Typography>
-            <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 2 }}>
-              {logo ? (
-                <Box
-                  component="img"
-                  src={logo}
-                  alt="App Logo"
-                  sx={{ width: 440, height: 80, borderRadius: 1, objectFit: 'contain' }}
-                />
-              ) : (
-                <Box
-                  sx={{
-                    width: 80,
-                    height: 80,
-                    borderRadius: 1,
-                    border: '1px dashed',
-                    borderColor: 'divider',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                  }}
-                >
-                  <ImageIcon color="action" sx={{ fontSize: 40 }} />
-                </Box>
-              )}
-              <Button
-                component={logo ? "button" : "label"}
-                variant="outlined"
-                sx={{ textTransform: 'none' }}
-                onClick={logo ? handleLogoRemove : undefined}
-              >
-                {logo ? 'Remove image' : 'Upload image'}
-                {!logo && (
-                  <input
-                    type="file"
-                    hidden
-                    accept="image/*"
-                    onChange={handleLogoChange}
-                  />
-                )}
-              </Button>
-              <Typography variant="caption" color="textSecondary">
-                Recommended size: 120px (maximum width) x 120px (minimum height) pixels. PNG or SVG format.
-              </Typography>
-            </Box>
-          </Box>
-
-
-        </CardContent>
-      </Card>
-
-      <Card sx={{ border: '1px solid', borderColor: 'divider', boxShadow: 'none', borderRadius: 2, maxWidth: 800, mx: 'auto', mb: 3 }}>
-        <CardContent sx={{ p: 3 }}>
-          <Box display="flex" alignItems="center" mb={2}>
-            <SchoolIcon color="primary" sx={{ width: 24, height: 24, mr: 2 }} />
-            <Typography variant="h5">Knowledge Base</Typography>
-          </Box>
-          
-          <Box sx={{ mb: 3 }}>
-            <Divider sx={{ mb: 3, mt: 4 }} />
-            <Button
-              variant="outlined"
-              component="label"
-              startIcon={<UploadFileIcon />}
-              sx={{ textTransform: 'none' }}
-            >
-              Upload Files
-              <input
-                type="file"
-                hidden
-                multiple
-                onChange={handleFileUpload}
-                accept=".txt,.pdf,.doc,.docx"
-              />
-            </Button>
-            <Typography variant="caption" color="textSecondary" sx={{ display: 'block', mt: 1 }}>
-              Accepted file formats: TXT, PDF, DOC, DOCX
-            </Typography>
-
-            {uploadedFiles.length > 0 && (
-              <List sx={{ mt: 2 }}>
-                {uploadedFiles.map((file, index) => (
-                  <ListItem key={index} sx={{ px: 0 }}>
-                    <ListItemText
-                      primary={file.name}
-                      secondary={`Uploaded: ${file.uploadDate}`}
-                      primaryTypographyProps={{ fontSize: '12px' }}
-                      secondaryTypographyProps={{ fontSize: '12px' }}
-                    />
-                    <IconButton edge="end" onClick={() => handleFileDelete(index)}>
-                      <DeleteIcon />
-                    </IconButton>
-                  </ListItem>
-                ))}
-              </List>
-            )}
-          </Box>
-        </CardContent>
-      </Card>
-
-      <Drawer
-        anchor="right"
-        open={isDrawerOpen}
-        onClose={handleDrawerClose}
-        sx={{
-          '& .MuiDrawer-paper': {
-            width: '50%',
-            maxWidth: 800,
-            p: 3,
-          },
+      <AppBar 
+        position="sticky" 
+        color="inherit" 
+        elevation={0}
+        sx={{ 
+          borderBottom: '1px solid',
+          borderColor: 'divider',
+          backgroundColor: 'background.paper',
+          mb: 3
         }}
       >
-        <Box sx={{ mb: 2 }}>
-          <Typography variant="h5">{drawerTitle}</Typography>
-          <Autocomplete
-            freeSolo
-            options={getSearchOptions()}
-            inputValue={searchTerm}
-            onInputChange={handleSearch}
-            getOptionLabel={(option) => {
-              if (typeof option === 'string') return option;
-              return option.title || '';
-            }}
-            renderOption={(props, option) => (
-              <Box component="li" {...props} sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                <StickyNote2Icon fontSize="small" />
-                <Typography>
-                  {option.title}
+        <Toolbar>
+          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+            {assistantId ? 'Edit AI Assistant' : 'Create AI Assistant'}
+          </Typography>
+          <Button 
+            color="inherit" 
+            onClick={handleCancel}
+            sx={{ mr: 2 }}
+          >
+            Cancel
+          </Button>
+          <Button 
+            variant="contained" 
+            color="primary"
+            onClick={handleSubmit}
+          >
+            {assistantId ? 'Update Assistant' : 'Save Assistant'}
+          </Button>
+        </Toolbar>
+      </AppBar>
+
+      <Box sx={{ p: 3 }}>
+        <Card sx={{ border: '1px solid', borderColor: 'divider', boxShadow: 'none', borderRadius: 2, maxWidth: 800, mx: 'auto', mb: 3 }}>
+          <CardContent sx={{ p: 3 }}>
+            <Box display="flex" alignItems="center" mb={2}>
+              <Typography variant="h5">
+             Details
+              </Typography>
+            </Box>
+            <Divider sx={{ mb: 3 }} />
+            
+            <form onSubmit={handleSubmit}>
+              <Grid container spacing={3}>
+                <Grid item xs={12}>
+                  <TextField
+                    fullWidth
+                    label="Assistant Name"
+                    name="name"
+                    value={formData.name}
+                    onChange={handleChange}
+                    required
+                  />
+                </Grid>
+
+                <Grid item xs={12}>
+                  <TextField
+                    fullWidth
+                    label="Description"
+                    name="description"
+                    value={formData.description}
+                    onChange={handleChange}
+                    multiline
+                    rows={4}
+                  />
+                </Grid>
+
+                <Grid item xs={12} md={6}>
+                  <FormControl fullWidth>
+                    <InputLabel>Model</InputLabel>
+                    <Select
+                      name="model"
+                      value={formData.model}
+                      onChange={handleChange}
+                      label="Model"
+                    >
+                      <MenuItem value="gpt-4">GPT-4</MenuItem>
+                      <MenuItem value="gpt-3.5-turbo">GPT-3.5 Turbo</MenuItem>
+                      <MenuItem value="claude-2">Claude 2</MenuItem>
+                    </Select>
+                  </FormControl>
+                </Grid>
+
+                <Grid item xs={12} md={6}>
+                  <TextField
+                    fullWidth
+                    label="Max Tokens"
+                    name="maxTokens"
+                    type="number"
+                    value={formData.maxTokens}
+                    onChange={handleChange}
+                    inputProps={{ min: 1, max: 4000 }}
+                  />
+                </Grid>
+
+                <Grid item xs={12} md={6}>
+                  <TextField
+                    fullWidth
+                    label="Temperature"
+                    name="temperature"
+                    type="number"
+                    value={formData.temperature}
+                    onChange={handleChange}
+                    inputProps={{ step: 0.1, min: 0, max: 2 }}
+                  />
+                </Grid>
+
+                <Grid item xs={12} md={6}>
+                  <FormControlLabel
+                    control={
+                      <Switch
+                        checked={formData.isActive}
+                        onChange={handleSwitchChange}
+                        name="isActive"
+                      />
+                    }
+                    label="Active"
+                  />
+                </Grid>
+
+                
+              </Grid>
+            </form>
+          </CardContent>
+        </Card>
+
+        <Card sx={{ border: '1px solid', borderColor: 'divider', boxShadow: 'none', borderRadius: 2, maxWidth: 800, mx: 'auto', mb: 3, marginTop: 4 }}>
+          <CardHeader
+            title={
+              <Box display="flex" alignItems="center">
+                <img src={artoIcon} alt="Arto Icon" style={{ width: 29, height: 36, marginRight: 16, marginBottom: 0 }} />
+                <Typography variant="h5">Instructions for AI Assistant</Typography>
+              </Box>
+            }
+            action={
+              <Button 
+                variant="text" 
+                onClick={() => handleShowExample(
+                  technicalContent,
+                  'Instruction library'
+                )}
+              >
+                Instruction library
+              </Button>
+            }
+          />
+          <CardContent sx={{ p: 3 }}>
+            <Divider sx={{ mb: 3 }} />
+            <Box sx={{ mb: 3 }}>
+              <Accordion>
+                <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                  <Typography variant="h5">Core purpose</Typography>
+                </AccordionSummary>
+                <AccordionDetails>
+                  <TextField
+                    fullWidth
+                    multiline
+                    rows={4}
+                    label="Core Purpose Instructions"
+                    value={corePurposeInstructions}
+                    onChange={(e) => setCorePurposeInstructions(e.target.value)}
+                    variant="outlined"
+                    placeholder="Enter core purpose instructions for the AI assistant..."
+                    sx={{ mt: 2 }}
+                  />
+                </AccordionDetails>
+              </Accordion>
+            </Box>
+
+            <Box sx={{ mb: 3 }}>
+              <Accordion>
+                <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                  <Typography variant="h5">Style and tone</Typography>
+                </AccordionSummary>
+                <AccordionDetails>
+                  <TextField
+                    fullWidth
+                    multiline
+                    rows={4}
+                    label="Style and Tone Instructions"
+                    value={styleToneInstructions}
+                    onChange={(e) => setStyleToneInstructions(e.target.value)}
+                    variant="outlined"
+                    placeholder="Enter style and tone instructions for the AI assistant..."
+                    sx={{ mt: 2 }}
+                  />
+                </AccordionDetails>
+              </Accordion>
+            </Box>
+
+            <Box sx={{ mb: 3 }}>
+              <Accordion>
+                <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                  <Typography variant="h5">Technical and troubleshooting</Typography>
+                </AccordionSummary>
+                <AccordionDetails>
+                  <TextField
+                    fullWidth
+                    multiline
+                    rows={4}
+                    label="Technical Instructions"
+                    value={technicalInstructions}
+                    onChange={(e) => setTechnicalInstructions(e.target.value)}
+                    variant="outlined"
+                    placeholder="Enter technical and troubleshooting instructions for the AI assistant..."
+                    sx={{ mt: 2 }}
+                  />
+                </AccordionDetails>
+              </Accordion>
+            </Box>
+          </CardContent>
+        </Card>
+
+        <Card sx={{ border: '1px solid', borderColor: 'divider', boxShadow: 'none', borderRadius: 2, maxWidth: 800, mx: 'auto', mb: 3 }}>
+          <CardContent sx={{ p: 3 }}>
+            <Box display="flex" alignItems="center" mb={2}>
+              <LinkIcon color="primary" sx={{ width: 40, height: 40, mr: 2 }} />
+              <Typography variant="h5">Connect</Typography>
+            </Box>
+            <Divider sx={{ mb: 3 }} />
+            
+            <Box sx={{ mb: 3 }}>
+              <Button
+                variant="outlined"
+                color="primary"
+                sx={{ mb: 2, textTransform: 'none' }}
+                onClick={() => setWhatsappDialogOpen(true)}
+              >
+                Connect WhatsApp Business
+              </Button>
+            </Box>
+          </CardContent>
+        </Card>
+
+        <Box sx={{ height: 24 }} />
+
+        <Card sx={{ border: '1px solid', borderColor: 'divider', boxShadow: 'none', borderRadius: 2, maxWidth: 800, mx: 'auto', mb: 6 }}>
+          <CardContent sx={{ p: 3 }}>
+            <Box display="flex" alignItems="center" mb={2}>
+              <ColorLensIcon color="primary" sx={{ width: 40, height: 40, mr: 2 }} />
+              <Typography variant="h5">Theme</Typography>
+            </Box>
+            <Divider sx={{ mb: 3 }} />
+
+            <Box sx={{ mb: 3 }}>
+              <Typography variant="subtitle2" gutterBottom>
+                App Logo
+              </Typography>
+              <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 2 }}>
+                {logo ? (
+                  <Box
+                    component="img"
+                    src={logo}
+                    alt="App Logo"
+                    sx={{ width: 440, height: 80, borderRadius: 1, objectFit: 'contain' }}
+                  />
+                ) : (
+                  <Box
+                    sx={{
+                      width: 440,
+                      height: 80,
+                      borderRadius: 1,
+                      border: '1px dashed',
+                      borderColor: 'divider',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                    }}
+                  >
+                    <ImageIcon color="action" sx={{ fontSize: 40 }} />
+                  </Box>
+                )}
+                <Button
+                  component={logo ? "button" : "label"}
+                  variant="outlined"
+                  sx={{ textTransform: 'none' }}
+                  onClick={logo ? handleLogoRemove : undefined}
+                >
+                  {logo ? 'Remove image' : 'Upload image'}
+                  {!logo && (
+                    <input
+                      type="file"
+                      hidden
+                      accept="image/*"
+                      onChange={handleLogoChange}
+                    />
+                  )}
+                </Button>
+                <Typography variant="caption" color="textSecondary">
+                  Recommended size: 120px (minimum height) pixels. PNG or SVG format.
                 </Typography>
               </Box>
-            )}
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                variant="outlined"
-                placeholder="Search instructions..."
-                sx={{ mt: 2 }}
-                InputProps={{
-                  ...params.InputProps,
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <SearchIcon />
-                    </InputAdornment>
-                  ),
-                }}
-              />
-            )}
-          />
-        </Box>
-        <Divider sx={{ mb: 2 }} />
-        <Box ref={contentRef} sx={{ overflowY: 'auto', flex: 1 }}>
-          <Typography variant="body1" sx={{ whiteSpace: 'pre-wrap' }}>
-            {getFilteredContent()}
-          </Typography>
-        </Box>
-      </Drawer>
+            </Box>
+            <Box sx={{ mb: 3, mt:6 }}>
+              <Typography variant="subtitle2" gutterBottom>
+                FAB icon
+              </Typography>
+              <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 2 }}>
+                {fabIcon ? (
+                  <Box
+                    component="img"
+                    src={fabIcon}
+                    alt="App Icon"
+                    sx={{ width: 80, height: 80, borderRadius: 1, objectFit: 'contain' }}
+                  />
+                ) : (
+                  <Box
+                    sx={{
+                      width: 80,
+                      height: 80,
+                      borderRadius: 1,
+                      border: '1px dashed',
+                      borderColor: 'divider',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                    }}
+                  >
+                    <ImageIcon color="action" sx={{ fontSize: 40 }} />
+                  </Box>
+                )}
+                <Button
+                  component={fabIcon ? "button" : "label"}
+                  variant="outlined"
+                  sx={{ textTransform: 'none' }}
+                  onClick={fabIcon ? handleFabIconRemove : undefined}
+                >
+                  {fabIcon ? 'Remove image' : 'Upload image'}
+                  {!fabIcon && (
+                    <input
+                      type="file"
+                      hidden
+                      accept="image/*"
+                      onChange={handleFabIconChange}
+                    />
+                  )}
+                </Button>
+                <Typography variant="caption" color="textSecondary">
+                  Recommended size: 120px (maximum width) x 120px (minimum height) pixels. PNG or SVG format.
+                </Typography>
+              </Box>
+            </Box>
+          </CardContent>
+        </Card>
 
-      {/* WhatsApp Dialog */}
-      <Dialog
-        open={whatsappDialogOpen}
-        onClose={() => setWhatsappDialogOpen(false)}
-        aria-labelledby="whatsapp-dialog-title"
-      >
-        <DialogTitle id="whatsapp-dialog-title">Connect WhatsApp Business</DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            To connect your WhatsApp Business account, please follow these steps:
-          </DialogContentText>
-          <Box component="ol" sx={{ mt: 2 }}>
-            <li>Open WhatsApp Business on your phone</li>
-            <li>Go to Settings > WhatsApp Business API</li>
-            <li>Scan the QR code below</li>
+        <Card sx={{ border: '1px solid', borderColor: 'divider', boxShadow: 'none', borderRadius: 2, maxWidth: 800, mx: 'auto', mb: 3 }}>
+          <CardContent sx={{ p: 3 }}>
+            <Box display="flex" alignItems="center" mb={2}>
+              <SchoolIcon color="primary" sx={{ width: 24, height: 24, mr: 2 }} />
+              <Typography variant="h5">Knowledge Base</Typography>
+            </Box>
+            
+            <Box sx={{ mb: 3 }}>
+              <Divider sx={{ mb: 3, mt: 4 }} />
+              <Button
+                variant="outlined"
+                component="label"
+                startIcon={<UploadFileIcon />}
+                sx={{ textTransform: 'none' }}
+              >
+                Upload Files
+                <input
+                  type="file"
+                  hidden
+                  multiple
+                  onChange={handleFileUpload}
+                  accept=".txt,.pdf,.doc,.docx"
+                />
+              </Button>
+              <Typography variant="caption" color="textSecondary" sx={{ display: 'block', mt: 1 }}>
+                Accepted file formats: TXT, PDF, DOC, DOCX
+              </Typography>
+
+              {uploadedFiles.length > 0 && (
+                <List sx={{ mt: 2 }}>
+                  {uploadedFiles.map((file, index) => (
+                    <ListItem key={index} sx={{ px: 0 }}>
+                      <ListItemText
+                        primary={file.name}
+                        secondary={`Uploaded: ${file.uploadDate}`}
+                        primaryTypographyProps={{ fontSize: '12px' }}
+                        secondaryTypographyProps={{ fontSize: '12px' }}
+                      />
+                      <IconButton edge="end" onClick={() => handleFileDelete(index)}>
+                        <DeleteIcon />
+                      </IconButton>
+                    </ListItem>
+                  ))}
+                </List>
+              )}
+            </Box>
+          </CardContent>
+        </Card>
+
+        <Drawer
+          anchor="right"
+          open={isDrawerOpen}
+          onClose={handleDrawerClose}
+          sx={{
+            '& .MuiDrawer-paper': {
+              width: '50%',
+              maxWidth: 800,
+              p: 3,
+            },
+          }}
+        >
+          <Box sx={{ mb: 2 }}>
+            <Typography variant="h5">{drawerTitle}</Typography>
+            <Autocomplete
+              freeSolo
+              options={getSearchOptions()}
+              inputValue={searchTerm}
+              onInputChange={handleSearch}
+              getOptionLabel={(option) => {
+                if (typeof option === 'string') return option;
+                return option.title || '';
+              }}
+              renderOption={(props, option) => (
+                <Box component="li" {...props} sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                  <StickyNote2Icon fontSize="small" />
+                  <Typography>
+                    {option.title}
+                  </Typography>
+                </Box>
+              )}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  variant="outlined"
+                  placeholder="Search instructions..."
+                  sx={{ mt: 2 }}
+                  InputProps={{
+                    ...params.InputProps,
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <SearchIcon />
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+              )}
+            />
           </Box>
-          <Box
-            sx={{
-              width: 200,
-              height: 200,
-              bgcolor: 'grey.100',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              mt: 2,
-              mx: 'auto',
-            }}
-          >
-            QR Code Placeholder
+          <Divider sx={{ mb: 2 }} />
+          <Box ref={contentRef} sx={{ overflowY: 'auto', flex: 1 }}>
+            <Typography variant="body1" sx={{ whiteSpace: 'pre-wrap' }}>
+              {getFilteredContent()}
+            </Typography>
           </Box>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setWhatsappDialogOpen(false)}>Close</Button>
-        </DialogActions>
-      </Dialog>
+        </Drawer>
+
+        {/* WhatsApp Dialog */}
+        <Dialog
+          open={whatsappDialogOpen}
+          onClose={() => setWhatsappDialogOpen(false)}
+          aria-labelledby="whatsapp-dialog-title"
+        >
+          <DialogTitle id="whatsapp-dialog-title">Connect WhatsApp Business</DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+              To connect your WhatsApp Business account, please follow these steps:
+            </DialogContentText>
+            <Box component="ol" sx={{ mt: 2 }}>
+              <li>Open WhatsApp Business on your phone</li>
+              <li>Go to Settings > WhatsApp Business API</li>
+              <li>Scan the QR code below</li>
+            </Box>
+            <Box
+              sx={{
+                width: 200,
+                height: 200,
+                bgcolor: 'grey.100',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                mt: 2,
+                mx: 'auto',
+              }}
+            >
+              QR Code Placeholder
+            </Box>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => setWhatsappDialogOpen(false)}>Close</Button>
+          </DialogActions>
+        </Dialog>
+      </Box>
     </Box>
   );
 };
