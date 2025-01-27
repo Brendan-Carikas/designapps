@@ -331,7 +331,7 @@ const Settings = () => {
         Settings
       </Typography>
       
-      <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 3 }}>
+      <Box sx={{ borderBottom: 0, borderColor: 'divider', mb: 3 }}>
        
       </Box>
 
