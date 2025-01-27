@@ -694,6 +694,7 @@ const AIAssistantForm = () => {
           borderColor: 'divider',
           boxShadow: 'none',
           zIndex: (theme) => theme.zIndex.drawer - 1,
+          mb: 3
         }}
       >
         <Toolbar>
@@ -1117,6 +1118,7 @@ const AIAssistantForm = () => {
                 <CardHeader
                   title={
                     <Box display="flex" alignItems="center">
+                      <SchoolIcon color="primary" sx={{ width: 40, height: 40, mr: 2 }} />
                       <Typography variant="h5">Instructions for AI Assistant</Typography>
                     </Box>
                   }
