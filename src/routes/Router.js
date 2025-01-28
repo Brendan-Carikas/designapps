@@ -5,6 +5,7 @@ import { Navigate } from "react-router-dom";
 import FullLayout from "../layouts/FullLayout/FullLayout.js";
 import AuthLayout from "../layouts/AuthLayout/AuthLayout.js";
 import CheckoutLayout from "../layouts/CheckoutLayout/CheckoutLayout.js";
+import ConversationLayout from "../layouts/ConversationLayout/ConversationLayout.js";
 
 // Pages
 import Dashboard1 from "../views/dashboards/Dashboard1.js";
@@ -12,6 +13,7 @@ import MyBilling from "../views/my-billing/MyBilling";
 import BillDetails from "../views/my-billing/BillDetails";
 import Settings from "../views/Settings/Settings.js";
 import AIAssistantForm from "../views/Settings/AIAssistantForm.js";
+import SingleConversation from "../views/Settings/SingleConversation.js";
 import LoginSelector from "../views/auth/LoginSelector.js";
 import ModernLogin from "../views/auth/ModernLogin.js";
 import Signup from "../views/auth/Signup.js";
@@ -43,6 +45,13 @@ const ThemeRoutes = [
       { path: "settings/ai-assistant", element: <AIAssistantForm /> },
       { path: "admin", element: <InvotraAdmin /> },
       { path: "usage", element: <Usage /> },
+    ],
+  },
+  {
+    path: "/app/settings/conversations",
+    element: <ConversationLayout />,
+    children: [
+      { path: ":id", element: <SingleConversation /> },
     ],
   },
   {
