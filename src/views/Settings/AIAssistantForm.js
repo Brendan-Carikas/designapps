@@ -35,16 +35,27 @@ import {
   AppBar,
   Toolbar,
   ListItemIcon,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Checkbox,
+  TablePagination,
+  Menu,
+  Stack,
+  Chip
 } from '@mui/material';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams, useLocation } from 'react-router-dom';
 import { useAIAssistants } from '../../contexts/AIAssistantsContext';
 import { useNotification } from '../../contexts/NotificationContext';
 import ColorLensIcon from '@mui/icons-material/ColorLens';
 import ImageIcon from '@mui/icons-material/Image';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import SchoolIcon from '@mui/icons-material/School';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import SearchIcon from '@mui/icons-material/Search';
+import SchoolIcon from '@mui/icons-material/School';
 import StickyNote2Icon from '@mui/icons-material/StickyNote2';
 import UploadFileIcon from '@mui/icons-material/UploadFile';
 import LinkIcon from '@mui/icons-material/Link';
@@ -52,7 +63,13 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import SettingsIcon from '@mui/icons-material/Settings';
 import PersonIcon from '@mui/icons-material/Person';
 import ChatIcon from '@mui/icons-material/Chat';
+import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
+import FilterListIcon from '@mui/icons-material/FilterList';
+import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import DashboardIcon from '@mui/icons-material/Dashboard';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 import artoIcon from '../../assets/images/arto-icon-crop.png';
 
 const copyTooltip = 'Copy';
@@ -394,6 +411,7 @@ If these steps don't resolve the issue, let me know, and I can provide more deta
 );
 
 const AIAssistantForm = () => {
+  const location = useLocation();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const assistantId = searchParams.get('id');
@@ -406,6 +424,7 @@ const AIAssistantForm = () => {
     temperature: 0.7,
     maxTokens: 2000,
     isActive: true,
+    color: '#1976d2', // Default color (Material-UI primary blue)
   });
   const [logo, setLogo] = useState(null);
   const [fabIcon, setFabIcon] = useState(null);
@@ -428,6 +447,43 @@ const AIAssistantForm = () => {
     const savedFiles = localStorage.getItem('uploadedFiles');
     return savedFiles ? JSON.parse(savedFiles) : [];
   });
+  const [conversations] = useState([
+    { id: 'conv-001', customerName: 'Guest', time: 'Jan 27, 2025, 8:30 AM', phoneNumber: '+44 7700 900001', platform: 'WhatsApp' },
+    { id: 'conv-002', customerName: 'Guest', time: 'Jan 26, 2025, 7:15 AM', phoneNumber: '+44 7700 900002', platform: 'WhatsApp' },
+    { id: 'conv-003', customerName: 'Guest', time: 'Jan 25, 2025, 6:45 AM', phoneNumber: '+44 7700 900003', platform: 'WhatsApp' },
+    { id: 'conv-004', customerName: 'Guest', time: 'Jan 24, 2025, 5:20 AM', phoneNumber: '+44 7700 900004', platform: 'WhatsApp' },
+    { id: 'conv-005', customerName: 'Guest', time: 'Jan 23, 2025, 4:10 AM', phoneNumber: '+44 7700 900005', platform: 'WhatsApp' },
+    { id: 'conv-006', customerName: 'Guest', time: 'Jan 22, 2025, 3:45 PM', phoneNumber: '+44 7700 900006', platform: 'WhatsApp' },
+    { id: 'conv-007', customerName: 'Guest', time: 'Jan 22, 2025, 2:30 PM', phoneNumber: '+44 7700 900007', platform: 'WhatsApp' },
+    { id: 'conv-008', customerName: 'Guest', time: 'Jan 22, 2025, 1:15 PM', phoneNumber: '+44 7700 900008', platform: 'WhatsApp' },
+    { id: 'conv-009', customerName: 'Guest', time: 'Jan 21, 2025, 11:45 AM', phoneNumber: '+44 7700 900009', platform: 'WhatsApp' },
+    { id: 'conv-010', customerName: 'Guest', time: 'Jan 21, 2025, 10:30 AM', phoneNumber: '+44 7700 900010', platform: 'WhatsApp' },
+    { id: 'conv-011', customerName: 'Guest', time: 'Jan 21, 2025, 9:15 AM', phoneNumber: '+44 7700 900011', platform: 'WhatsApp' },
+    { id: 'conv-012', customerName: 'Guest', time: 'Jan 20, 2025, 4:45 PM', phoneNumber: '+44 7700 900012', platform: 'WhatsApp' },
+    { id: 'conv-013', customerName: 'Guest', time: 'Jan 20, 2025, 3:30 PM', phoneNumber: '+44 7700 900013', platform: 'WhatsApp' },
+    { id: 'conv-014', customerName: 'Guest', time: 'Jan 20, 2025, 2:15 PM', phoneNumber: '+44 7700 900014', platform: 'WhatsApp' },
+    { id: 'conv-015', customerName: 'Guest', time: 'Jan 19, 2025, 1:45 PM', phoneNumber: '+44 7700 900015', platform: 'WhatsApp' },
+    { id: 'conv-016', customerName: 'Guest', time: 'Jan 19, 2025, 12:30 PM', phoneNumber: '+44 7700 900016', platform: 'WhatsApp' },
+    { id: 'conv-017', customerName: 'Guest', time: 'Jan 19, 2025, 11:15 AM', phoneNumber: '+44 7700 900017', platform: 'WhatsApp' },
+    { id: 'conv-018', customerName: 'Guest', time: 'Jan 18, 2025, 5:45 PM', phoneNumber: '+44 7700 900018', platform: 'WhatsApp' },
+    { id: 'conv-019', customerName: 'Guest', time: 'Jan 18, 2025, 4:30 PM', phoneNumber: '+44 7700 900019', platform: 'WhatsApp' },
+    { id: 'conv-020', customerName: 'Guest', time: 'Jan 18, 2025, 3:15 PM', phoneNumber: '+44 7700 900020', platform: 'WhatsApp' },
+    { id: 'conv-021', customerName: 'Guest', time: 'Jan 17, 2025, 2:45 PM', phoneNumber: '+44 7700 900021', platform: 'WhatsApp' },
+    { id: 'conv-022', customerName: 'Guest', time: 'Jan 17, 2025, 1:30 PM', phoneNumber: '+44 7700 900022', platform: 'WhatsApp' },
+    { id: 'conv-023', customerName: 'Guest', time: 'Jan 17, 2025, 12:15 PM', phoneNumber: '+44 7700 900023', platform: 'WhatsApp' },
+    { id: 'conv-024', customerName: 'Guest', time: 'Jan 16, 2025, 11:45 AM', phoneNumber: '+44 7700 900024', platform: 'WhatsApp' },
+    { id: 'conv-025', customerName: 'Guest', time: 'Jan 16, 2025, 10:30 AM', phoneNumber: '+44 7700 900025', platform: 'WhatsApp' }
+  ]);
+  const [selectedConversations, setSelectedConversations] = useState([]);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(25);
+  const [filterAnchorEl, setFilterAnchorEl] = useState(null);
+  const [menuAnchorEl, setMenuAnchorEl] = useState(null);
+  const [activeConversationId, setActiveConversationId] = useState(null);
+  const [customDateDialog, setCustomDateDialog] = useState(false);
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
+  const [selectedFilter, setSelectedFilter] = useState('all');
   const contentRef = useRef(null);
 
   const [selectedSection, setSelectedSection] = useState('general');
@@ -460,10 +516,18 @@ const AIAssistantForm = () => {
           temperature: assistant.temperature,
           maxTokens: assistant.maxTokens,
           isActive: assistant.status === 'Active',
+          color: assistant.color || '#1976d2', // Default color (Material-UI primary blue)
         });
       }
     }
   }, [assistantId, assistants]);
+
+  useEffect(() => {
+    if (location.state?.section) {
+      setSelectedSection(location.state.section);
+      scrollToSection(location.state.section);
+    }
+  }, [location]);
 
   const scrollToSection = (id) => {
     if (!contentRef.current) return;
@@ -683,6 +747,169 @@ const AIAssistantForm = () => {
     setSelectedSection(section);
   };
 
+  const handleSelectAll = (event) => {
+    if (event.target.checked) {
+      setSelectedConversations(filteredConversations.map(conv => conv.id));
+    } else {
+      setSelectedConversations([]);
+    }
+  };
+
+  const handleSelectConversation = (id) => {
+    setSelectedConversations(prev => {
+      if (prev.includes(id)) {
+        return prev.filter(convId => convId !== id);
+      } else {
+        return [...prev, id];
+      }
+    });
+  };
+
+  const handleMenuOpen = (event, conversationId) => {
+    setMenuAnchorEl(event.currentTarget);
+    setActiveConversationId(conversationId);
+  };
+
+  const handleMenuClose = () => {
+    setMenuAnchorEl(null);
+    setActiveConversationId(null);
+  };
+
+  const handleRowClick = (id) => {
+    navigate(`/app/settings/conversations/${id}`, {
+      state: { assistantId }
+    });
+  };
+
+  const handleFilterClick = (event) => {
+    setFilterAnchorEl(event.currentTarget);
+  };
+
+  const handleFilterClose = () => {
+    setFilterAnchorEl(null);
+  };
+
+  const handleFilterSelect = (filter) => {
+    setSelectedFilter(filter);
+    setFilterAnchorEl(null);
+    if (filter === 'custom') {
+      setCustomDateDialog(true);
+    }
+    // Reset page when filter changes
+    setPage(0);
+  };
+
+  const handleCustomDateConfirm = () => {
+    setCustomDateDialog(false);
+    // Reset page when date range changes
+    setPage(0);
+  };
+
+  const handleCustomDateCancel = () => {
+    setCustomDateDialog(false);
+    setSelectedFilter('all');
+    setStartDate(null);
+    setEndDate(null);
+    // Reset page when canceling custom date
+    setPage(0);
+  };
+
+  const handleDateChange = (date, type) => {
+    if (type === 'start') {
+      setStartDate(date);
+    } else {
+      setEndDate(date);
+    }
+  };
+
+  const getFilteredByDate = (conversations) => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    
+    const sevenDaysAgo = new Date(today);
+    sevenDaysAgo.setDate(today.getDate() - 7);
+    
+    const thirtyDaysAgo = new Date(today);
+    thirtyDaysAgo.setDate(today.getDate() - 30);
+
+    switch (selectedFilter) {
+      case 'today':
+        return conversations.filter(conv => {
+          const convDate = new Date(conv.time);
+          return convDate >= today;
+        });
+      case '7d':
+        return conversations.filter(conv => {
+          const convDate = new Date(conv.time);
+          return convDate >= sevenDaysAgo;
+        });
+      case '30d':
+        return conversations.filter(conv => {
+          const convDate = new Date(conv.time);
+          return convDate >= thirtyDaysAgo;
+        });
+      case 'custom':
+        if (!startDate || !endDate) return conversations;
+        return conversations.filter(conv => {
+          const convDate = new Date(conv.time);
+          return convDate >= startDate && convDate <= endDate;
+        });
+      default:
+        return conversations;
+    }
+  };
+
+  const filteredConversations = getFilteredByDate(conversations).filter(conversation => {
+    if (!searchTerm) return true;
+    const searchLower = searchTerm.toLowerCase();
+    return (
+      conversation.id.toLowerCase().includes(searchLower) ||
+      conversation.customerName.toLowerCase().includes(searchLower) ||
+      conversation.phoneNumber.toLowerCase().includes(searchLower) ||
+      conversation.platform.toLowerCase().includes(searchLower)
+    );
+  });
+
+  const sidebarItems = [
+    {
+      icon: <DashboardIcon />,
+      text: 'General',
+      value: 'general',
+      show: true
+    },
+    
+    {
+      icon: <SchoolIcon />,
+      text: 'Instructions',
+      value: 'train',
+      show: true
+    },
+    {
+      icon: <StickyNote2Icon />,
+      text: 'Knowledge',
+      value: 'knowledge',
+      show: true
+    },
+
+    {
+      icon: <ColorLensIcon />,
+      text: 'Theme',
+      value: 'theme',
+      show: true
+    },
+    {
+      
+      icon: <ChatIcon />,
+      text: 'Conversations',
+      value: 'conversations',
+      show: !!assistantId
+      
+      
+    }
+  ];
+
+  const filteredSidebarItems = sidebarItems.filter(item => item.show);
+
   return (
     <Box sx={{ display: 'flex', position: 'relative' }}>
       <AppBar
@@ -737,126 +964,39 @@ const AIAssistantForm = () => {
           px: 2,
           overflow: 'hidden'
         }}>
-          <ListItem
-            button
-            selected={selectedSection === 'general'}
-            onClick={() => {
-              setSelectedSection('general');
-              scrollToSection('details');
-            }}
-            sx={{
-              borderRadius: 2,
-              mb: 0.5,
-              '&.Mui-selected': {
-                backgroundColor: 'primary.main',
-                '& .MuiListItemIcon-root': {
-                  color: 'common.white',
+          {filteredSidebarItems.map((item) => (
+            <ListItem
+              key={item.value}
+              button
+              selected={selectedSection === item.value}
+              onClick={() => {
+                setSelectedSection(item.value);
+                scrollToSection(item.value);
+              }}
+              sx={{
+                borderRadius: 2,
+                mb: 0.5,
+                '&.Mui-selected': {
+                  backgroundColor: 'primary.main',
+                  '& .MuiListItemIcon-root': {
+                    color: 'common.white',
+                  },
+                  '& .MuiListItemText-primary': {
+                    color: 'common.white',
+                    fontWeight: 500,
+                  },
+                  '&:hover': {
+                    backgroundColor: 'primary.dark',
+                  },
                 },
-                '& .MuiListItemText-primary': {
-                  color: 'common.white',
-                  fontWeight: 500,
-                },
-                '&:hover': {
-                  backgroundColor: 'primary.dark',
-                },
-              },
-            }}
-          >
-            <ListItemIcon sx={{ minWidth: 40, color: selectedSection === 'general' ? 'common.white' : 'inherit' }}>
-              <SettingsIcon />
-            </ListItemIcon>
-            <ListItemText primary="General" />
-          </ListItem>
-          <ListItem
-            button
-            selected={selectedSection === 'theme'}
-            onClick={() => {
-              setSelectedSection('theme');
-              scrollToSection('theme');
-            }}
-            sx={{
-              borderRadius: 2,
-              mb: 0.5,
-              '&.Mui-selected': {
-                backgroundColor: 'primary.main',
-                '& .MuiListItemIcon-root': {
-                  color: 'common.white',
-                },
-                '& .MuiListItemText-primary': {
-                  color: 'common.white',
-                  fontWeight: 500,
-                },
-                '&:hover': {
-                  backgroundColor: 'primary.dark',
-                },
-              },
-            }}
-          >
-            <ListItemIcon sx={{ minWidth: 40, color: selectedSection === 'theme' ? 'common.white' : 'inherit' }}>
-              <ColorLensIcon />
-            </ListItemIcon>
-            <ListItemText primary="Theme" />
-          </ListItem>
-          <ListItem
-            button
-            selected={selectedSection === 'train'}
-            onClick={() => {
-              setSelectedSection('train');
-              scrollToSection('train');
-            }}
-            sx={{
-              borderRadius: 2,
-              mb: 0.5,
-              '&.Mui-selected': {
-                backgroundColor: 'primary.main',
-                '& .MuiListItemIcon-root': {
-                  color: 'common.white',
-                },
-                '& .MuiListItemText-primary': {
-                  color: 'common.white',
-                  fontWeight: 500,
-                },
-                '&:hover': {
-                  backgroundColor: 'primary.dark',
-                },
-              },
-            }}
-          >
-            <ListItemIcon sx={{ minWidth: 40, color: selectedSection === 'train' ? 'common.white' : 'inherit' }}>
-              <SchoolIcon />
-            </ListItemIcon>
-            <ListItemText primary="Train" />
-          </ListItem>
-          <ListItem
-            button
-            selected={selectedSection === 'knowledge'}
-            onClick={() => {
-              setSelectedSection('knowledge');
-              scrollToSection('knowledge');
-            }}
-            sx={{
-              borderRadius: 2,
-              mb: 0.5,
-              '&.Mui-selected': {
-                backgroundColor: 'primary.main',
-                '& .MuiListItemIcon-root': {
-                  color: 'common.white',
-                },
-                '& .MuiListItemText-primary': {
-                  color: 'common.white',
-                  fontWeight: 500,
-                },
-                '&:hover': {
-                  backgroundColor: 'primary.dark',
-                },
-              },
-            }}
-          >
-            <ListItemIcon sx={{ minWidth: 40, color: selectedSection === 'knowledge' ? 'common.white' : 'inherit' }}>
-              <StickyNote2Icon />
-            </ListItemIcon>
-            <ListItemText primary="Knowledge" />
-          </ListItem>
+              }}
+            >
+              <ListItemIcon sx={{ minWidth: 40, color: selectedSection === item.value ? 'common.white' : 'inherit' }}>
+                {item.icon}
+              </ListItemIcon>
+              <ListItemText primary={item.text} />
+            </ListItem>
+          ))}
         </List>
       </Drawer>
 
@@ -960,6 +1100,19 @@ const AIAssistantForm = () => {
                             />
                           }
                           label="Active"
+                        />
+                      </Grid>
+
+                      <Grid item xs={12} md={6}>
+                        <FormControlLabel
+                          control={
+                            <Switch
+                              checked={formData.color}
+                              onChange={handleSwitchChange}
+                              name="color"
+                            />
+                          }
+                          label="Color"
                         />
                       </Grid>
 
@@ -1097,7 +1250,30 @@ const AIAssistantForm = () => {
                         )}
                       </Button>
                       <Typography variant="caption" color="textSecondary">
-                        Recommended size: 120px (maximum width) x 120px (minimum height) pixels. PNG or SVG format.
+                        Recommended size: 80x80 pixels. PNG or SVG format.
+                      </Typography>
+                    </Box>
+                  </Box>
+                  <Box sx={{ mb: 3, mt: 6 }}>
+                    <Typography variant="subtitle2" gutterBottom>
+                      Colour
+                    </Typography>
+                    <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 2 }}>
+                      <input
+                        type="color"
+                        value={formData.color}
+                        onChange={(e) => handleChange({ target: { name: 'color', value: e.target.value }})}
+                        style={{ 
+                          width: '100px',
+                          height: '40px',
+                          padding: '0',
+                          border: 'none',
+                          borderRadius: '4px',
+                          cursor: 'pointer'
+                        }}
+                      />
+                      <Typography variant="caption" color="textSecondary">
+                        Define the colour for your chatbot assistant
                       </Typography>
                     </Box>
                   </Box>
@@ -1111,7 +1287,7 @@ const AIAssistantForm = () => {
             <>
               <Box sx={{ p: 3, mb: 2 }}>
                 <Typography variant="h2" sx={{ ml: 1 }}>
-                  Train
+                  Instructions
                 </Typography>
               </Box>
               <Card sx={{ border: '1px solid', borderColor: 'divider', boxShadow: 'none', borderRadius: 2, mx: 4 }}>
@@ -1258,6 +1434,251 @@ const AIAssistantForm = () => {
                   </Box>
                 </CardContent>
               </Card>
+            </>
+          )}
+
+          {/* Conversations Section */}
+          {selectedSection === 'conversations' && assistantId && (
+            <>
+              <Box sx={{ p: 3, mb: 2 }}>
+                <Typography variant="h2" sx={{ ml: 1 }}>
+                  Conversations
+                </Typography>
+              </Box>
+              
+              
+              <Card sx={{ border: '1px solid', borderColor: 'divider', boxShadow: 'none', borderRadius: 2, mx: 4 }}>
+                <CardContent sx={{ p: 3 }}>
+                  <Box display="flex" alignItems="center" mb={2}>
+                    <Box sx={{ flex: 1 }}>
+                      <TextField
+                        placeholder="Search conversations"
+                        size="small"
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        sx={{ 
+                          width: 440,
+                          '& .MuiOutlinedInput-root': {
+                            borderRadius: 3
+                          }
+                        }}
+                        InputProps={{
+                          startAdornment: (
+                            <InputAdornment position="start">
+                              <SearchIcon color="action" />
+                            </InputAdornment>
+                          ),
+                        }}
+                      />
+                    </Box>
+                    <Box sx={{ display: 'flex', gap: 1 }}>
+                      <Button
+                        variant="outlined"
+                        onClick={handleFilterClick}
+                        startIcon={<FilterListIcon />}
+                        sx={{ 
+                          textTransform: 'none',
+                          minWidth: 140
+                        }}
+                      >
+                        {selectedFilter === 'all' ? 'All time' : 
+                         selectedFilter === 'today' ? 'Today' :
+                         selectedFilter === '7d' ? 'Last 7 days' :
+                         selectedFilter === '30d' ? 'Last 30 days' :
+                         'Custom range'}
+                      </Button>
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        disabled={selectedConversations.length === 0}
+                        sx={{ textTransform: 'none' }}
+                        startIcon={<FileDownloadIcon />}
+                      >
+                        Export
+                      </Button>
+                    </Box>
+                  </Box>
+                  <Divider sx={{ mb: 3 }} />
+                  <Box sx={{ overflowX: 'auto', width: '100%', WebkitOverflowScrolling: 'touch' }}>
+                    <Table sx={{ minWidth: 650 }}>
+                      <TableHead>
+                        <TableRow>
+                          <TableCell padding="checkbox" sx={{ pl: 2 }}>
+                            <Checkbox
+                              indeterminate={selectedConversations.length > 0 && selectedConversations.length < filteredConversations.length}
+                              checked={selectedConversations.length === filteredConversations.length && filteredConversations.length > 0}
+                              onChange={handleSelectAll}
+                            />
+                          </TableCell>
+                          <TableCell sx={{ color: 'text.primary', fontWeight: 600 }}>Conversation ID</TableCell>
+                          <TableCell sx={{ color: 'text.primary', fontWeight: 600 }}>Phone Number</TableCell>
+                          <TableCell sx={{ color: 'text.primary', fontWeight: 600 }}>Customer Name</TableCell>
+                          <TableCell sx={{ color: 'text.primary', fontWeight: 600 }}>Created Date</TableCell>
+                          <TableCell sx={{ color: 'text.primary', fontWeight: 600 }}>Platform</TableCell>
+                          <TableCell align="right" sx={{ pr: 2, color: 'text.primary', fontWeight: 600 }}>Actions</TableCell>
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>
+                        {filteredConversations
+                          .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                          .map((conversation) => (
+                            <TableRow
+                              key={conversation.id}
+                              hover
+                              onClick={() => handleRowClick(conversation.id)}
+                              sx={{ cursor: 'pointer' }}
+                            >
+                              <TableCell padding="checkbox" onClick={(e) => e.stopPropagation()} sx={{ pl: 2 }}>
+                                <Checkbox
+                                  checked={selectedConversations.includes(conversation.id)}
+                                  onChange={() => handleSelectConversation(conversation.id)}
+                                />
+                              </TableCell>
+                              <TableCell sx={{ color: 'text.primary' }}>{conversation.id}</TableCell>
+                              <TableCell sx={{ color: 'text.primary' }}>{conversation.phoneNumber}</TableCell>
+                              <TableCell sx={{ color: 'text.primary' }}>{conversation.customerName}</TableCell>
+                              <TableCell sx={{ color: 'text.primary' }}>{conversation.time}</TableCell>
+                              <TableCell sx={{ color: 'text.primary' }}>{conversation.platform}</TableCell>
+                              <TableCell align="right" onClick={(e) => e.stopPropagation()} sx={{ pr: 3 }}>
+                                <IconButton 
+                                  onClick={(event) => handleMenuOpen(event, conversation.id)}
+                                >
+                                  <MoreHorizIcon fontSize="small" />
+                                </IconButton>
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                      </TableBody>
+                    </Table>
+                    <Box sx={{ 
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                      borderTop: '1px solid rgba(0, 0, 0, 0.12)',
+                    }}>
+                      <Box sx={{ p: 2 }}>
+                        {selectedConversations.length > 0 && (
+                          <Typography variant="body2" color="text.primary">
+                            {selectedConversations.length} {selectedConversations.length === 1 ? 'row' : 'rows'} selected
+                          </Typography>
+                        )}
+                      </Box>
+                      <TablePagination
+                        rowsPerPageOptions={[5, 10, 25]}
+                        component="div"
+                        count={filteredConversations.length}
+                        rowsPerPage={rowsPerPage}
+                        page={page}
+                        onPageChange={(event, newPage) => setPage(newPage)}
+                        onRowsPerPageChange={(event) => {
+                          setRowsPerPage(parseInt(event.target.value, 10));
+                          setPage(0);
+                        }}
+                      />
+                    </Box>
+                  </Box>
+                </CardContent>
+              </Card>
+
+              {/* Filter Menu */}
+              <Menu
+                anchorEl={filterAnchorEl}
+                open={Boolean(filterAnchorEl)}
+                onClose={handleFilterClose}
+              >
+                <MenuItem 
+                  onClick={() => handleFilterSelect('all')}
+                  selected={selectedFilter === 'all'}
+                >
+                  All time
+                </MenuItem>
+                <MenuItem 
+                  onClick={() => handleFilterSelect('today')}
+                  selected={selectedFilter === 'today'}
+                >
+                  Today
+                </MenuItem>
+                <MenuItem 
+                  onClick={() => handleFilterSelect('7d')}
+                  selected={selectedFilter === '7d'}
+                >
+                  Last 7 days
+                </MenuItem>
+                <MenuItem 
+                  onClick={() => handleFilterSelect('30d')}
+                  selected={selectedFilter === '30d'}
+                >
+                  Last 30 days
+                </MenuItem>
+                <MenuItem 
+                  onClick={() => handleFilterSelect('custom')}
+                  selected={selectedFilter === 'custom'}
+                >
+                  Custom range
+                </MenuItem>
+              </Menu>
+
+              {/* Custom Date Dialog */}
+              <Dialog open={customDateDialog} onClose={handleCustomDateCancel}>
+                <DialogTitle>Select Date Range</DialogTitle>
+                <DialogContent>
+                  <LocalizationProvider dateAdapter={AdapterDateFns}>
+                    <Stack spacing={3} sx={{ mt: 2 }}>
+                      <DesktopDatePicker
+                        label="Start Date"
+                        value={startDate}
+                        onChange={(date) => handleDateChange(date, 'start')}
+                        renderInput={(params) => (
+                          <TextField
+                            {...params}
+                            size="small"
+                            fullWidth
+                          />
+                        )}
+                      />
+                      <DesktopDatePicker
+                        label="End Date"
+                        value={endDate}
+                        onChange={(date) => handleDateChange(date, 'end')}
+                        minDate={startDate}
+                        renderInput={(params) => (
+                          <TextField
+                            {...params}
+                            size="small"
+                            fullWidth
+                          />
+                        )}
+                      />
+                    </Stack>
+                  </LocalizationProvider>
+                </DialogContent>
+                <DialogActions>
+                  <Button onClick={handleCustomDateCancel}>Cancel</Button>
+                  <Button onClick={handleCustomDateConfirm} variant="contained">Apply</Button>
+                </DialogActions>
+              </Dialog>
+
+              {/* Row Actions Menu */}
+              <Menu
+                anchorEl={menuAnchorEl}
+                open={Boolean(menuAnchorEl)}
+                onClose={handleMenuClose}
+                anchorOrigin={{
+                  vertical: 'bottom',
+                  horizontal: 'right',
+                }}
+                transformOrigin={{
+                  vertical: 'top',
+                  horizontal: 'right',
+                }}
+              >
+                <MenuItem onClick={handleMenuClose}>
+                  <ListItemIcon>
+                    <FileDownloadIcon fontSize="small" />
+                  </ListItemIcon>
+                  Export
+                </MenuItem>
+              </Menu>
             </>
           )}
 
